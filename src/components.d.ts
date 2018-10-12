@@ -7,11 +7,15 @@
 
 import '@stencil/core';
 
+import '@stencil/redux';
 import '@ionic/core';
 import 'ionicons';
 
 
 export namespace Components {
+
+  interface AppRoot {}
+  interface AppRootAttributes extends StencilHTMLAttributes {}
 
   interface AppHome {}
   interface AppHomeAttributes extends StencilHTMLAttributes {}
@@ -22,24 +26,27 @@ export namespace Components {
   interface AppProfileAttributes extends StencilHTMLAttributes {
     'name'?: string;
   }
-
-  interface AppRoot {}
-  interface AppRootAttributes extends StencilHTMLAttributes {}
 }
 
 declare global {
   interface StencilElementInterfaces {
+    'AppRoot': Components.AppRoot;
     'AppHome': Components.AppHome;
     'AppProfile': Components.AppProfile;
-    'AppRoot': Components.AppRoot;
   }
 
   interface StencilIntrinsicElements {
+    'app-root': Components.AppRootAttributes;
     'app-home': Components.AppHomeAttributes;
     'app-profile': Components.AppProfileAttributes;
-    'app-root': Components.AppRootAttributes;
   }
 
+
+  interface HTMLAppRootElement extends Components.AppRoot, HTMLStencilElement {}
+  var HTMLAppRootElement: {
+    prototype: HTMLAppRootElement;
+    new (): HTMLAppRootElement;
+  };
 
   interface HTMLAppHomeElement extends Components.AppHome, HTMLStencilElement {}
   var HTMLAppHomeElement: {
@@ -53,22 +60,16 @@ declare global {
     new (): HTMLAppProfileElement;
   };
 
-  interface HTMLAppRootElement extends Components.AppRoot, HTMLStencilElement {}
-  var HTMLAppRootElement: {
-    prototype: HTMLAppRootElement;
-    new (): HTMLAppRootElement;
-  };
-
   interface HTMLElementTagNameMap {
+    'app-root': HTMLAppRootElement
     'app-home': HTMLAppHomeElement
     'app-profile': HTMLAppProfileElement
-    'app-root': HTMLAppRootElement
   }
 
   interface ElementTagNameMap {
+    'app-root': HTMLAppRootElement;
     'app-home': HTMLAppHomeElement;
     'app-profile': HTMLAppProfileElement;
-    'app-root': HTMLAppRootElement;
   }
 
 

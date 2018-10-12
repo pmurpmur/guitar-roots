@@ -1,12 +1,19 @@
 import { Component, Prop, Listen } from '@stencil/core';
+import { Store } from '@stencil/redux';
+
+import { configureStore } from './app.store'
+
 
 @Component({
   tag: 'app-root',
-  styleUrl: 'app-root.css'
 })
 export class AppRoot {
-  
+  @Prop({ context: 'store' }) store: Store;
   @Prop({ connect: 'ion-toast-controller' }) toastCtrl: HTMLIonToastControllerElement;
+
+  componentWillLoad() {
+    this.store.setStore(configureStore({}));
+  }
 
   /**
    * Handle service worker updates correctly.

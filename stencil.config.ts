@@ -11,6 +11,6 @@ export const config: Config = {
       }
     }
   ],
-  globalScript: 'src/global/app.ts',
-  globalStyle: 'src/global/app.css'
+  globalScript: 'src/app/app.ts',
+  globalStyle: 'src/app/app.css'
 };

@@ -1,8 +1,8 @@
 import { Component, Prop, State } from '@stencil/core';
 import { Store, Action } from '@stencil/redux';
 
-import * as fromTuning from '../../modules/tuning/reducers';
-import { tuning } from '../../modules/tuning/actions';
+import * as fromTuning from '../../reducers';
+import { tuning } from '../../actions';
 
 
 @Component({

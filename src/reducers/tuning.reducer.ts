@@ -1,8 +1,8 @@
 import { transpose } from 'ramda';
 import { createSelector } from 'reselect';
 
-import { calcFrettedNotes } from '../../../helpers/music-theory';
-import { createReducer } from '../../../helpers/redux-utilities';
+import { calcFrettedNotes } from '../helpers/music-theory';
+import { createReducer } from '../helpers/redux-utilities';
 
 import * as actions from '../actions/tuning.actions';
 

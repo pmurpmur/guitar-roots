@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 
-import * as fromTuning from '../modules/tuning/reducers';
+import * as fromTuning from '../reducers';
 
 
 const rootReducer = (combineReducers as any)({

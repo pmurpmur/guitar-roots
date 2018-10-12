@@ -1,19 +1,19 @@
 import { newE2EPage } from '@stencil/core/testing';
 
-describe('app-home', () => {
+describe('home', () => {
   it('renders', async () => {
     const page = await newE2EPage();
-    await page.setContent('<app-home></app-home>');
+    await page.setContent('<home></home>');
 
-    const element = await page.find('app-home');
+    const element = await page.find('home');
     expect(element).toHaveClass('hydrated');
   });
 
   it('contains a "Profile Page" button', async () => {
     const page = await newE2EPage();
-    await page.setContent('<app-home></app-home>');
+    await page.setContent('<home></home>');
 
-    const element = await page.find('app-home ion-content ion-button');
+    const element = await page.find('home ion-content ion-button');
     expect(element.textContent).toEqual('Profile page');
   });
 });

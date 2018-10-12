@@ -20,6 +20,7 @@
 
 .fret.nut .string-box.root {
   border-right: none;
+}
 
 .fret.nut .value-bubble {
   right: -2px;

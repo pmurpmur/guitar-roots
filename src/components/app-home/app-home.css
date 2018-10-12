@@ -42,7 +42,7 @@
   border-top: none;
   border-left: none;
   border-right: none;
-  border-bottom: 4px solid black;
+  border-bottom: 2px solid black;
 }
 
 .string-box:last-of-type {
@@ -52,6 +52,8 @@
 .dot {
   height: 16px;
   width: 16px;
+  max-height: 3vw;
+  max-width: 3vw;
   background-color: #bbb;
   border-radius: 50%;
   display: inline-block;

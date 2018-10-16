@@ -6,8 +6,8 @@ import { tuning } from '../../actions';
 
 
 @Component({
-  tag: 'app-home',
-  styleUrl: 'app-home.css'
+  tag: 'page-guitar',
+  styleUrl: 'guitar.scss'
 })
 export class AppHome {
   @Prop({ context: 'store' }) store: Store;
@@ -36,16 +36,19 @@ export class AppHome {
     }
   }
 
-  showDot(fretIndex: number, slinkIndex: number): boolean {
-    return (slinkIndex === 3 && (fretIndex === 3 || fretIndex === 5 || fretIndex === 7 || fretIndex === 9))
-      || (fretIndex === 12 && (slinkIndex === 2 || slinkIndex === 4));
+  showDot(fretIndex: number): any {
+    if (fretIndex === 3 || fretIndex === 5 || fretIndex === 7 || fretIndex === 9) {
+      return <div class="dot" />;
+    } else if (fretIndex === 12) {
+      return [
+        <div class="dot" />,
+        <div class="dot" />,
+      ];
+    }
   }
 
 
   render() {
-
-    console.log(this.neck);
-
     return [
       <ion-header>
         <ion-toolbar color="primary">
@@ -54,16 +57,40 @@ export class AppHome {
       </ion-header>,
 
       <ion-content padding>
+        
         <div class="fret-board">
-          {this.neck.map((fret, iFret) =>
-            <div class={`fret ${iFret === 0 ? 'nut' : ''}`}>
-              {fret.map((slink, iSlink) =>
-                <div class={`string-box ${iSlink === 0 ? 'root' : ''}`}>
-                  {this.showDot(iFret, iSlink) && <span class="dot"></span>}
-                  {slink && <div class="value-bubble">{slink}</div>}
+          <div class="slinky first" />
+          <div class="slinky second" />
+          <div class="slinky third" />
+          <div class="slinky fourth" />
+          <div class="slinky fifth" />
+          <div class="slinky sixth" />
+          {this.neck.map((fret, iFret) => iFret === 0 ? [
+              <div class="open-notes">
+                {fret.map(slink =>
+                  <div class="note">
+                    <div class={`value-bubble ${!slink ? 'hide' : ''}`}>{slink}</div>
+                  </div>
+                )}
+              </div>,
+              <div class="nut" />,
+            ] : (
+              <div class="fret-container">
+                <div class="above-fret">
+                  {iFret}
                 </div>
-              )}
-            </div>
+                <div class="dots">
+                  {this.showDot(iFret)}
+                </div>
+                <div class="fret">
+                  {fret.map(slink =>
+                    <div class="note">
+                      <div class={`value-bubble ${!slink ? 'hide' : ''}`}>{slink}</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )
           )}
         </div>
 
@@ -76,12 +103,17 @@ export class AppHome {
             cancel-text="Dismiss"
           >
             <ion-select-option value="all">Show All</ion-select-option>
+            <ion-select-option value="Ab">Ab</ion-select-option>
             <ion-select-option value="A">A</ion-select-option>
+            <ion-select-option value="Bb">Bb</ion-select-option>
             <ion-select-option value="B">B</ion-select-option>
             <ion-select-option value="C">C</ion-select-option>
+            <ion-select-option value="Db">Db</ion-select-option>
             <ion-select-option value="D">D</ion-select-option>
+            <ion-select-option value="Eb">Eb</ion-select-option>
             <ion-select-option value="E">E</ion-select-option>
             <ion-select-option value="F">F</ion-select-option>
+            <ion-select-option value="Gb">Gb</ion-select-option>
             <ion-select-option value="G">G</ion-select-option>
           </ion-select>
         </ion-item>

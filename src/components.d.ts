@@ -17,19 +17,19 @@ export namespace Components {
   interface AppRoot {}
   interface AppRootAttributes extends StencilHTMLAttributes {}
 
-  interface AppHome {}
-  interface AppHomeAttributes extends StencilHTMLAttributes {}
+  interface PageGuitar {}
+  interface PageGuitarAttributes extends StencilHTMLAttributes {}
 }
 
 declare global {
   interface StencilElementInterfaces {
     'AppRoot': Components.AppRoot;
-    'AppHome': Components.AppHome;
+    'PageGuitar': Components.PageGuitar;
   }
 
   interface StencilIntrinsicElements {
     'app-root': Components.AppRootAttributes;
-    'app-home': Components.AppHomeAttributes;
+    'page-guitar': Components.PageGuitarAttributes;
   }
 
 
@@ -39,20 +39,20 @@ declare global {
     new (): HTMLAppRootElement;
   };
 
-  interface HTMLAppHomeElement extends Components.AppHome, HTMLStencilElement {}
-  var HTMLAppHomeElement: {
-    prototype: HTMLAppHomeElement;
-    new (): HTMLAppHomeElement;
+  interface HTMLPageGuitarElement extends Components.PageGuitar, HTMLStencilElement {}
+  var HTMLPageGuitarElement: {
+    prototype: HTMLPageGuitarElement;
+    new (): HTMLPageGuitarElement;
   };
 
   interface HTMLElementTagNameMap {
     'app-root': HTMLAppRootElement
-    'app-home': HTMLAppHomeElement
+    'page-guitar': HTMLPageGuitarElement
   }
 
   interface ElementTagNameMap {
     'app-root': HTMLAppRootElement;
-    'app-home': HTMLAppHomeElement;
+    'page-guitar': HTMLPageGuitarElement;
   }
 
 

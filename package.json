@@ -9,8 +9,10 @@
     "dist/"
   ],
   "scripts": {
+    "stencil": "stencil",
     "build": "stencil build",
     "start": "stencil build --dev --watch --serve",
+    "startup": "stencil build --dev --watch",
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watch"
   },
@@ -18,15 +20,17 @@
     "@ionic/core": "4.0.0-beta.12",
     "@stencil/core": "0.13.2",
     "@stencil/redux": "0.0.4",
+    "@stencil/router": "0.3.1",
     "@types/jest": "23.3.5",
     "ramda": "0.25.0",
-    "redux": "4.0.0",
+    "redux": "4.0.1",
     "redux-logger": "3.0.6",
     "redux-thunk": "2.3.0",
     "reselect": "4.0.0"
   },
   "devDependencies": {
+    "@stencil/sass": "0.1.1",
     "redux-devtools-extension": "2.13.5",
-    "workbox-build": "3.4.1"
+    "workbox-build": "3.6.2"
   }
 }

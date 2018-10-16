@@ -1,3 +1,5 @@
+import { transpose } from 'ramda';
+
 /**
  * Convert notes to integers
  */
@@ -58,4 +60,22 @@ export function calcFrettedNotes(startNote: string, numFrets = 12): string[] {
     result.push(noteToString(note + i));
   }
   return result;
+}
+
+/**
+ * Calculate fretted notes for all string
+ */
+export function calcFrettedAllNotes(tuning: string[]): string[][] {
+  return transpose(tuning.reduce((collection, note) => [
+    ...collection,
+    calcFrettedNotes(note),
+  ], []));
+}
+
+/**
+ * Calculate notes from formula
+ */
+export function parseNotesFromFormula(root: string, mode: number[]): string[] {
+  const keyNote = parseNote(root);
+  return mode.map(modeNote => noteToString(keyNote + modeNote));
 }

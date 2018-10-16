@@ -1,7 +1,9 @@
-import { Component, Prop, Listen } from '@stencil/core';
-import { Store } from '@stencil/redux';
+import { Component, Prop, State, Listen } from '@stencil/core';
+import { Store, Action } from '@stencil/redux';
 
 import { configureStore } from './app.store'
+import * as fromTuning from '../reducers';
+import { tuning } from '../actions';
 
 
 @Component({
@@ -11,8 +13,50 @@ export class AppRoot {
   @Prop({ context: 'store' }) store: Store;
   @Prop({ connect: 'ion-toast-controller' }) toastCtrl: HTMLIonToastControllerElement;
 
+  @State() modeName: string;
+
+  setMode: Action;
+
+
   componentWillLoad() {
     this.store.setStore(configureStore({}));
+    this.store.mapStateToProps(this, (state) => ({
+      modeName: fromTuning.getModeName(state),
+    }));
+
+    this.store.mapDispatchToProps(this, {
+      setMode: tuning.SetModeAction,
+    });
+  }
+
+  handleSetMode = (event) => {
+    const isChecked = event.detail.checked && event.detail.value !== this.modeName;
+    switch(event.detail.value) {
+      case 'major': {
+        this.setMode({
+          name: isChecked ? event.detail.value : null,
+          data: isChecked ? [0, 2, 4, 5, 7, 9, 11] : null,
+        });
+      } break;
+      case 'minor': {
+        this.setMode({
+          name: isChecked ? event.detail.value : null,
+          data: isChecked ? [0, 2, 3, 5, 7, 8, 10] : null,
+        });
+      } break;
+      case 'major-pentatonic': {
+        this.setMode({
+          name: isChecked ? event.detail.value : null,
+          data: isChecked ? [0, 2, 4, 7, 9] : null,
+        });
+      } break;
+      case 'minor-pentatonic': {
+        this.setMode({
+          name: isChecked ? event.detail.value : null,
+          data: isChecked ? [0, 3, 5, 7, 10] : null,
+        });
+      } break;
+    }
   }
 
   /**
@@ -39,10 +83,61 @@ export class AppRoot {
   render() {
     return (
       <ion-app>
-        <ion-router useHash={false}>
-          <ion-route url="/" component="page-guitar" />
-        </ion-router>
-        <ion-nav />
+        <ion-split-pane when={false}>
+          <ion-menu>
+            <ion-header>
+              <ion-toolbar color="tertiary">
+                <ion-title>Modes</ion-title>
+              </ion-toolbar>
+            </ion-header>
+
+            <ion-content>
+              <ion-list>
+                <ion-item>
+                  <ion-label>Major</ion-label>
+                  <ion-checkbox
+                    color="secondary"
+                    value="major"
+                    checked={this.modeName === 'major'}
+                    onIonChange={this.handleSetMode}
+                  ></ion-checkbox>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Minor</ion-label>
+                  <ion-checkbox
+                    color="secondary"
+                    value="minor"
+                    checked={this.modeName === 'minor'}
+                    onIonChange={this.handleSetMode}
+                  ></ion-checkbox>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Major Pentatonic</ion-label>
+                  <ion-checkbox
+                    color="secondary"
+                    value="major-pentatonic"
+                    checked={this.modeName === 'major-pentatonic'}
+                    onIonChange={this.handleSetMode}
+                  ></ion-checkbox>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Minor Pentatonic</ion-label>
+                  <ion-checkbox
+                    color="secondary"
+                    value="minor-pentatonic"
+                    checked={this.modeName === 'minor-pentatonic'}
+                    onIonChange={this.handleSetMode}
+                  ></ion-checkbox>
+                </ion-item>
+              </ion-list>
+            </ion-content>
+          </ion-menu>
+
+          <ion-router useHash={false}>
+            <ion-route url="/" component="page-guitar" />
+          </ion-router>
+          <ion-nav main />
+        </ion-split-pane>
       </ion-app>
     );
   }

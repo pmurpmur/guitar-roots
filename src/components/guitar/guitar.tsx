@@ -14,25 +14,24 @@ export class AppHome {
   @Prop({ context: 'store' }) store: Store;
 
   @State() neck: string[][];
-  @State() selectedNote: string;
+  @State() root: string;
 
-  selectNote: Action;
+  selectKey: Action;
 
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => ({
       neck: fromTuning.getNeck(state),
-      selectedNote: fromTuning.getSelectedNote(state),
+      root: fromTuning.getRoot(state),
     }));
 
     this.store.mapDispatchToProps(this, {
-      selectNote: tuning.SelectNoteAction,
+      selectKey: tuning.SelectRootAction,
     });
   }
 
   handleRange = (event) => {
     const { value } = event.target;
-    this.selectNote(value === 0 ? null : noteToString(value));
-
+    this.selectKey(value === 0 ? null : noteToString(value));
     event.srcElement.shadowRoot.querySelector('.range-pin').innerHTML = value === 0 ? 'All' : noteToString(value);
   }
 
@@ -52,7 +51,10 @@ export class AppHome {
     return [
       <ion-header>
         <ion-toolbar color="tertiary">
-          <ion-title>Guitar Roots {this.selectedNote ? ` - ${this.selectedNote}` : ''}</ion-title>
+          <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+          </ion-buttons>
+          <ion-title>Guitar Roots {this.root ? ` - ${this.root}` : ''}</ion-title>
         </ion-toolbar>
       </ion-header>,
 
@@ -94,7 +96,7 @@ export class AppHome {
           )}
         </div>
 
-        <ion-item>
+        <ion-item lines="none">
           <ion-range
             min={0}
             max={12}
@@ -105,6 +107,7 @@ export class AppHome {
             onIonChange={this.handleRange}
           ></ion-range>
         </ion-item>
+
       </ion-content>
     ];
   }

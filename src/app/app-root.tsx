@@ -93,42 +93,48 @@ export class AppRoot {
 
             <ion-content>
               <ion-list>
-                <ion-item>
-                  <ion-label>Major</ion-label>
-                  <ion-checkbox
-                    color="secondary"
-                    value="major"
-                    checked={this.modeName === 'major'}
-                    onIonChange={this.handleSetMode}
-                  ></ion-checkbox>
-                </ion-item>
-                <ion-item>
-                  <ion-label>Minor</ion-label>
-                  <ion-checkbox
-                    color="secondary"
-                    value="minor"
-                    checked={this.modeName === 'minor'}
-                    onIonChange={this.handleSetMode}
-                  ></ion-checkbox>
-                </ion-item>
-                <ion-item>
-                  <ion-label>Major Pentatonic</ion-label>
-                  <ion-checkbox
-                    color="secondary"
-                    value="major-pentatonic"
-                    checked={this.modeName === 'major-pentatonic'}
-                    onIonChange={this.handleSetMode}
-                  ></ion-checkbox>
-                </ion-item>
-                <ion-item>
-                  <ion-label>Minor Pentatonic</ion-label>
-                  <ion-checkbox
-                    color="secondary"
-                    value="minor-pentatonic"
-                    checked={this.modeName === 'minor-pentatonic'}
-                    onIonChange={this.handleSetMode}
-                  ></ion-checkbox>
-                </ion-item>
+                <ion-radio-group>
+                  <ion-item>
+                    <ion-label>Major</ion-label>
+                    <ion-radio
+                      color="secondary"
+                      value="major"
+                      checked={this.modeName === 'major'}
+                      onIonSelect={this.handleSetMode}
+                      mode="ios"
+                    />
+                  </ion-item>
+                  <ion-item>
+                    <ion-label>Minor</ion-label>
+                    <ion-radio
+                      color="secondary"
+                      value="minor"
+                      checked={this.modeName === 'minor'}
+                      onIonSelect={this.handleSetMode}
+                      mode="ios"
+                    />
+                  </ion-item>
+                  <ion-item>
+                    <ion-label>Major Pentatonic</ion-label>
+                    <ion-radio
+                      color="secondary"
+                      value="major-pentatonic"
+                      checked={this.modeName === 'major-pentatonic'}
+                      onIonSelect={this.handleSetMode}
+                      mode="ios"
+                    />
+                  </ion-item>
+                  <ion-item>
+                    <ion-label>Minor Pentatonic</ion-label>
+                    <ion-radio
+                      color="secondary"
+                      value="minor-pentatonic"
+                      checked={this.modeName === 'minor-pentatonic'}
+                      onIonSelect={this.handleSetMode}
+                      mode="ios"
+                    />
+                  </ion-item>
+                </ion-radio-group>
               </ion-list>
             </ion-content>
           </ion-menu>

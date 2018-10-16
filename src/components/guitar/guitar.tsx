@@ -23,17 +23,14 @@ export class AppHome {
       selectedNote: fromTuning.getSelectedNote(state),
     }));
 
-
     this.store.mapDispatchToProps(this, {
       selectNote: tuning.SelectNoteAction,
     });
   }
 
-  handleSelectNote = (event) => {
+  handleRange = (event) => {
     const { value } = event.target;
-    if (value !== undefined) {
-      this.selectNote(value === 'all' ? null : value);
-    }
+    this.selectNote(value === 0 ? null : value);
   }
 
   showDot(fretIndex: number): any {
@@ -51,8 +48,8 @@ export class AppHome {
   render() {
     return [
       <ion-header>
-        <ion-toolbar color="primary">
-          <ion-title>Guitar Roots</ion-title>
+        <ion-toolbar color="tertiary">
+          <ion-title>Guitar Roots {this.selectedNote ? ` - ${this.selectedNote}` : ''}</ion-title>
         </ion-toolbar>
       </ion-header>,
 
@@ -94,28 +91,16 @@ export class AppHome {
           )}
         </div>
 
-        <ion-item class="root-select">
-          <ion-label>Select Root Note</ion-label>
-          <ion-select
-            value={this.selectedNote}
-            onIonChange={this.handleSelectNote}
-            ok-text="Okay"
-            cancel-text="Dismiss"
-          >
-            <ion-select-option value="all">Show All</ion-select-option>
-            <ion-select-option value="Ab">Ab</ion-select-option>
-            <ion-select-option value="A">A</ion-select-option>
-            <ion-select-option value="Bb">Bb</ion-select-option>
-            <ion-select-option value="B">B</ion-select-option>
-            <ion-select-option value="C">C</ion-select-option>
-            <ion-select-option value="Db">Db</ion-select-option>
-            <ion-select-option value="D">D</ion-select-option>
-            <ion-select-option value="Eb">Eb</ion-select-option>
-            <ion-select-option value="E">E</ion-select-option>
-            <ion-select-option value="F">F</ion-select-option>
-            <ion-select-option value="Gb">Gb</ion-select-option>
-            <ion-select-option value="G">G</ion-select-option>
-          </ion-select>
+        <ion-item>
+          <ion-range
+            min={0}
+            max={12}
+            step={1}
+            snaps={true}
+            pin={true}
+            color="secondary"
+            onIonChange={this.handleRange}
+          ></ion-range>
         </ion-item>
       </ion-content>
     ];

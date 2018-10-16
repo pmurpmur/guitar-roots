@@ -28,6 +28,8 @@ export function parseNote(note: string): number {
  * Note to string
  */
 export function noteToString(note: number, flats = true): string {
+  if (note === null) { return null; }
+
   switch(note % 12) {
     case 0: return flats ? 'Ab' : 'G+';
     case 1: return 'A';
@@ -41,7 +43,7 @@ export function noteToString(note: number, flats = true): string {
     case 9: return 'F';
     case 10: return flats ? 'Gb' : 'F+';
     case 11: return 'G';
-    default: return '';
+    default: return null;
   }
 }
 

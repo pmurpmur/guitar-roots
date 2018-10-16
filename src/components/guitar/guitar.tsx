@@ -3,6 +3,7 @@ import { Store, Action } from '@stencil/redux';
 
 import * as fromTuning from '../../reducers';
 import { tuning } from '../../actions';
+import { noteToString } from '../../helpers/music-theory';
 
 
 @Component({
@@ -30,10 +31,12 @@ export class AppHome {
 
   handleRange = (event) => {
     const { value } = event.target;
-    this.selectNote(value === 0 ? null : value);
+    this.selectNote(value === 0 ? null : noteToString(value));
+
+    event.srcElement.shadowRoot.querySelector('.range-pin').innerHTML = value === 0 ? 'All' : noteToString(value);
   }
 
-  showDot(fretIndex: number): any {
+  renderDot(fretIndex: number): any {
     if (fretIndex === 3 || fretIndex === 5 || fretIndex === 7 || fretIndex === 9) {
       return <div class="dot" />;
     } else if (fretIndex === 12) {
@@ -77,7 +80,7 @@ export class AppHome {
                   {iFret}
                 </div>
                 <div class="dots">
-                  {this.showDot(iFret)}
+                  {this.renderDot(iFret)}
                 </div>
                 <div class="fret">
                   {fret.map(slink =>

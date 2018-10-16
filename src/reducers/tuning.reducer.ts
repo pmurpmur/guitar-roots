@@ -1,7 +1,7 @@
 import { transpose } from 'ramda';
 import { createSelector } from 'reselect';
 
-import { calcFrettedNotes, noteToString } from '../helpers/music-theory';
+import { calcFrettedNotes } from '../helpers/music-theory';
 import { createReducer } from '../helpers/redux-utilities';
 
 import * as actions from '../actions/tuning.actions';
@@ -47,7 +47,7 @@ const tuneData = (payload: string[]) => {
 export const reducer = createReducer(initialState, {
   [actions.SELECT_NOTE]: payload => state => ({
     ...state,
-    selectedNote: noteToString(payload),
+    selectedNote: payload,
   }),
   [actions.TUNE]: tuneData,
 });

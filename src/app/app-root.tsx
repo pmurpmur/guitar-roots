@@ -13,19 +13,23 @@ export class AppRoot {
   @Prop({ context: 'store' }) store: Store;
   @Prop({ connect: 'ion-toast-controller' }) toastCtrl: HTMLIonToastControllerElement;
 
+  @State() tune: string[];
   @State() modeName: string;
 
   setMode: Action;
+  setTune: Action;
 
 
   componentWillLoad() {
     this.store.setStore(configureStore({}));
     this.store.mapStateToProps(this, (state) => ({
+      tune: fromTuning.getTune(state),
       modeName: fromTuning.getModeName(state),
     }));
 
     this.store.mapDispatchToProps(this, {
       setMode: tuning.SetModeAction,
+      setTune: tuning.TuneAction,
     });
   }
 
@@ -59,6 +63,10 @@ export class AppRoot {
     }
   }
 
+  handleTune = slinkyNum => (event) => {
+    this.setTune(Object.assign([], this.tune, { [slinkyNum]: event.detail.text }));
+  }
+
   /**
    * Handle service worker updates correctly.
    * This code will show a toast letting the
@@ -81,17 +89,107 @@ export class AppRoot {
   }
 
   render() {
+
+    const NoteOptions = ({ tune }: { tune: string }) => [
+      <ion-select-option value={1} selected={tune === 'A'}>A</ion-select-option>,
+      <ion-select-option value={2} selected={tune === 'A+' || tune === 'Bb'}>Bb</ion-select-option>,
+      <ion-select-option value={3} selected={tune === 'B'}>B</ion-select-option>,
+      <ion-select-option value={4} selected={tune === 'C'}>C</ion-select-option>,
+      <ion-select-option value={5} selected={tune === 'C+' || tune === 'Db'}>Db</ion-select-option>,
+      <ion-select-option value={6} selected={tune === 'D'}>D</ion-select-option>,
+      <ion-select-option value={7} selected={tune === 'D+' || tune === 'Eb'}>Eb</ion-select-option>,
+      <ion-select-option value={8} selected={tune === 'E'}>E</ion-select-option>,
+      <ion-select-option value={9} selected={tune === 'F'}>F</ion-select-option>,
+      <ion-select-option value={10} selected={tune === 'F+' || tune === 'Gb'}>Gb</ion-select-option>,
+      <ion-select-option value={11} selected={tune === 'G'}>G</ion-select-option>,
+      <ion-select-option value={12} selected={tune === 'G+' || tune === 'Ab'}>Ab</ion-select-option>,
+    ];
+
     return (
       <ion-app>
         <ion-split-pane when={false}>
           <ion-menu>
             <ion-header>
               <ion-toolbar color="tertiary">
-                <ion-title>Modes</ion-title>
+                <ion-title>Tuning</ion-title>
               </ion-toolbar>
             </ion-header>
 
             <ion-content>
+              <ion-list>
+                <ion-item>
+                  <ion-label>1st String</ion-label>
+                  <ion-select
+                    onIonChange={this.handleTune(0)}
+                    interface="alert"
+                    interfaceOptions={{ mode: 'ios' }}
+                    placeholder="Tune"
+                  >
+                    <NoteOptions tune={this.tune[0]} />
+                  </ion-select>
+                </ion-item>
+
+                <ion-item>
+                  <ion-label>2nd String</ion-label>
+                  <ion-select
+                    onIonChange={this.handleTune(1)}
+                    interface="alert"
+                    interfaceOptions={{ mode: 'ios' }}
+                    placeholder="Tune"
+                  >
+                    <NoteOptions tune={this.tune[1]} />
+                  </ion-select>
+                </ion-item>
+
+                <ion-item>
+                  <ion-label>3rd String</ion-label>
+                  <ion-select
+                    onIonChange={this.handleTune(2)}
+                    interface="alert"
+                    interfaceOptions={{ mode: 'ios' }}
+                    placeholder="Tune"
+                  >
+                    <NoteOptions tune={this.tune[2]} />
+                  </ion-select>
+                </ion-item>
+
+                <ion-item>
+                  <ion-label>4th String</ion-label>
+                  <ion-select
+                    onIonChange={this.handleTune(3)}
+                    interface="alert"
+                    interfaceOptions={{ mode: 'ios' }}
+                    placeholder="Tune"
+                  >
+                    <NoteOptions tune={this.tune[3]} />
+                  </ion-select>
+                </ion-item>
+
+                <ion-item>
+                  <ion-label>5th String</ion-label>
+                  <ion-select
+                    onIonChange={this.handleTune(4)}
+                    interface="alert"
+                    interfaceOptions={{ mode: 'ios' }}
+                    placeholder="Tune"
+                  >
+                    <NoteOptions tune={this.tune[4]} />
+                  </ion-select>
+                </ion-item>
+
+                <ion-item>
+                  <ion-label>6th String</ion-label>
+                  <ion-select
+                    onIonChange={this.handleTune(5)}
+                    interface="alert"
+                    interfaceOptions={{ mode: 'ios' }}
+                    placeholder="Tune"
+                  >
+                    <NoteOptions tune={this.tune[5]} />
+                  </ion-select>
+                </ion-item>
+              </ion-list>
+
               <ion-list>
                 <ion-radio-group>
                   <ion-item>

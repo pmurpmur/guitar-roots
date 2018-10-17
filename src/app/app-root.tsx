@@ -39,25 +39,37 @@ export class AppRoot {
       case 'major': {
         this.setMode({
           name: isChecked ? event.detail.value : null,
-          data: isChecked ? [0, 2, 4, 5, 7, 9, 11] : null,
+          data: isChecked ? ['1', '2', '3', '4', '5', '6', '7'] : null,
         });
       } break;
       case 'minor': {
         this.setMode({
           name: isChecked ? event.detail.value : null,
-          data: isChecked ? [0, 2, 3, 5, 7, 8, 10] : null,
+          data: isChecked ? ['1', '2', 'b3', '4', '5', 'b6', 'b7'] : null,
         });
       } break;
       case 'major-pentatonic': {
         this.setMode({
           name: isChecked ? event.detail.value : null,
-          data: isChecked ? [0, 2, 4, 7, 9] : null,
+          data: isChecked ? ['1', '2', '3', '5', '6'] : null,
         });
       } break;
       case 'minor-pentatonic': {
         this.setMode({
           name: isChecked ? event.detail.value : null,
-          data: isChecked ? [0, 3, 5, 7, 10] : null,
+          data: isChecked ? ['1', 'b3', '4', '5', 'b7'] : null,
+        });
+      } break;
+      case 'harmonic-minor': {
+        this.setMode({
+          name: isChecked ? event.detail.value : null,
+          data: isChecked ? ['1', '2', 'b3', '4', '5', 'b6', '7'] : null,
+        });
+      } break;
+      case 'blues-scale': {
+        this.setMode({
+          name: isChecked ? event.detail.value : null,
+          data: isChecked ? ['1', 'b3', '4', 'b5', '5', 'b7'] : null,
         });
       } break;
     }
@@ -228,6 +240,26 @@ export class AppRoot {
                       color="secondary"
                       value="minor-pentatonic"
                       checked={this.modeName === 'minor-pentatonic'}
+                      onIonSelect={this.handleSetMode}
+                      mode="ios"
+                    />
+                  </ion-item>
+                  <ion-item>
+                    <ion-label>Harmonic Minor</ion-label>
+                    <ion-radio
+                      color="secondary"
+                      value="harmonic-minor"
+                      checked={this.modeName === 'harmonic-minor'}
+                      onIonSelect={this.handleSetMode}
+                      mode="ios"
+                    />
+                  </ion-item>
+                  <ion-item>
+                    <ion-label>Blues Scale</ion-label>
+                    <ion-radio
+                      color="secondary"
+                      value="blues-scale"
+                      checked={this.modeName === 'blues-scale'}
                       onIonSelect={this.handleSetMode}
                       mode="ios"
                     />

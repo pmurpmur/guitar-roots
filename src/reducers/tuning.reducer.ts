@@ -1,7 +1,7 @@
 import { lensProp, set } from 'ramda';
 import { createSelector } from 'reselect';
 
-import { calcFrettedAllNotes, parseNotesFromFormula } from '../helpers/music-theory';
+import { calcFrettedAllNotes, parseNotesFromFormula, parseFormula } from '../helpers/music-theory';
 import { createReducer } from '../helpers/redux-utilities';
 
 import * as actions from '../actions/tuning.actions';
@@ -23,10 +23,10 @@ export const initialState: State = {
 };
 
 
-const setMode = (payload: { name: string, data: number[] }) => {
+const setMode = (payload: { name: string, data: string[] }) => {
   return (state: State): State => ({
     ...state,
-    mode: payload.data,
+    mode: parseFormula(payload.data),
     modeName: payload.name,
   });
 }

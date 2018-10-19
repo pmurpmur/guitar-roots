@@ -21,3 +21,24 @@ export function createReducer(initialState, handlers) {
     }
   }
 }
+
+/**
+ * Initialize entity pattern ids from a plain old object
+ */
+export function initializeIds(data: { [label: string]: string[] }): number[] {
+  return Object.keys(data).map((_key, index) => index + 1);
+}
+
+/**
+ * Initialize entity pattern entities for from a plain old object
+ */
+export function intializeEntities(data: { [label: string]: string[] }): { [id: number]: { id: number, label: string, value: any }} {
+  const entries = Object.entries(data);
+  return entries.reduce((prev, [label, value], index) => {
+    const id = index + 1;
+    return {
+      ...prev,
+      [id]: { id, label, value }
+    };
+  }, {});
+}

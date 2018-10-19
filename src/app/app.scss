@@ -5,6 +5,7 @@
   You can comment out any of these imports if you do not need that css. For example, if you have your own
   global font family css then you can comment out the typography.css import.
 */
+@import "~bulma/css/bulma.min.css";
 
 /** Core CSS required for ionic components to work property */
 @import "~@ionic/core/css/core.css";
@@ -19,7 +20,7 @@
 @import "~@ionic/core/css/float-elements.css";
 @import "~@ionic/core/css/text-alignment.css";
 @import "~@ionic/core/css/text-transformation.css";
-@import "~@ionic/core/css/flex-utils.css";
+/* @import "~@ionic/core/css/flex-utils.css"; */
 
 /*
   The CSS Variables below can be used to theme your app.
@@ -102,6 +103,36 @@
   --ion-color-light-tint: #f5f6f9;
 }
 
+/** Ionic Overrides */
+ion-range {
+  --height: 43px;
+  --bar-height: 2px;
+}
+
+/** Bulma Overrides */
+.tile {
+  &.is-child {
+    width: 100%;
+  }
+}
+
+/** Bulma + Ionic conflicts */
+ion-menu-button.button {
+  border: none;
+  background-color: initial;
+  color: white;
+  padding: initial;
+
+  &.button:hover {
+    color: white;
+  }
+}
+
+/** Global Styles */
 .hide {
   visibility: hidden;
+}
+
+.width--full {
+  width: 100%;
 }

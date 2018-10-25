@@ -19,17 +19,22 @@ export namespace Components {
 
   interface PageGuitar {}
   interface PageGuitarAttributes extends StencilHTMLAttributes {}
+
+  interface FretBoard {}
+  interface FretBoardAttributes extends StencilHTMLAttributes {}
 }
 
 declare global {
   interface StencilElementInterfaces {
     'AppRoot': Components.AppRoot;
     'PageGuitar': Components.PageGuitar;
+    'FretBoard': Components.FretBoard;
   }
 
   interface StencilIntrinsicElements {
     'app-root': Components.AppRootAttributes;
     'page-guitar': Components.PageGuitarAttributes;
+    'fret-board': Components.FretBoardAttributes;
   }
 
 
@@ -45,14 +50,22 @@ declare global {
     new (): HTMLPageGuitarElement;
   };
 
+  interface HTMLFretBoardElement extends Components.FretBoard, HTMLStencilElement {}
+  var HTMLFretBoardElement: {
+    prototype: HTMLFretBoardElement;
+    new (): HTMLFretBoardElement;
+  };
+
   interface HTMLElementTagNameMap {
     'app-root': HTMLAppRootElement
     'page-guitar': HTMLPageGuitarElement
+    'fret-board': HTMLFretBoardElement
   }
 
   interface ElementTagNameMap {
     'app-root': HTMLAppRootElement;
     'page-guitar': HTMLPageGuitarElement;
+    'fret-board': HTMLFretBoardElement;
   }
 
 

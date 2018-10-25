@@ -1,4 +1,4 @@
-import { AppRoot } from '../app-root';
+import { AppRoot } from './app-root';
 
 describe('app-root', () => {
   it('builds', () => {

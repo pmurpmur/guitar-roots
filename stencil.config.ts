@@ -15,5 +15,5 @@ export const config: Config = {
     sass(),
   ],
   globalScript: 'src/app/app.ts',
-  globalStyle: 'src/app/app.css',
+  globalStyle: 'src/app/app.scss',
 };

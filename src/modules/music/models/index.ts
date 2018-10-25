@@ -5,6 +5,11 @@ export { Tuning } from './tuning.model';
 
 export interface NoteDetails {
   note: number,
-  pitchClass: string,
-  scaleNumber: number,
+  name: string,
+  letter: string,
+  accidental: string,
+  modifier?: string,
+  octave?: number,
+  number: number,
+  color: string,
 };

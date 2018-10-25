@@ -39,5 +39,12 @@ export const getSelectedEntity = createSelector(getEntities, getSelectedId, (ent
 });
 
 export const getItems = createSelector(getEntities, getIds, (entities, ids) => {
-  return ids.map(id => entities[id]);
+  return ids
+    .map(id => entities[id])
+    .sort((a: Scale, b: Scale) => {
+      if (b.id === 1) { return 1; }
+      if (a.label < b.label) { return -1; }
+      if (a.label > b.label) { return 1; }
+      return 0;
+    });
 });

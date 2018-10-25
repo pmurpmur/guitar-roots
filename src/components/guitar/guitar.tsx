@@ -1,7 +1,7 @@
 import { Component, Prop, State } from '@stencil/core';
 import { Store, Action } from '@stencil/redux';
 
-import { stringifyNote } from '../../modules/music/services/note.service';
+import { stringifyNote, stringifyNoteUTF, parseNote } from '../../modules/music/services/note.service';
 
 import * as fromMusic from '../../modules/music/reducers';
 import * as actions from '../../modules/music/actions';
@@ -18,23 +18,29 @@ export class GuitarPage {
   @State() root: Note;
   @State() scale: Scale;
   @State() tuning: Tuning;
+  @State() isPitchClass: boolean;
   @State() isNumberSystem: boolean;
   @State() isFlat: boolean;
+  @State() isSharp: boolean;
   @State() scales: Scale[];
 
   selectRoot: Action;
   selectScale: Action;
   selectTuning: Action;
-  toggleNaming: Action;
-  toggleAccidental: Action;
+  selectNaming: Action;
+  selectAccidental: Action;
+  tuneString: Action;
+  setString: Action;
 
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => ({
       root: fromMusic.getSelectedNote(state),
       scale: fromMusic.getSelectedScale(state),
       tuning: fromMusic.getSelectedTuning(state),
+      isPitchClass: fromMusic.isPitchClass(state),
       isNumberSystem: fromMusic.isNumberSystem(state),
       isFlat: fromMusic.isFlat(state),
+      isSharp: fromMusic.isSharp(state),
       scales: fromMusic.getScales(state),
     }));
 
@@ -42,32 +48,44 @@ export class GuitarPage {
       selectRoot: actions.note.SelectAction,
       selectScale: actions.scale.SelectAction,
       selectTuning: actions.tuning.SelectAction,
-      toggleNaming: actions.note.ToggleNamingAction,
-      toggleAccidental: actions.note.ToggleAccidentalAction,
+      selectNaming: actions.note.SelectNamingAction,
+      selectAccidental: actions.note.SelectAccidentalAction,
+      tuneString: actions.tuning.TuneStringAction,
+      setString: actions.tuning.SetStringsAction,
     });
   }
 
-  handleVisualToggle = (event) => {
-    console.log('here')
-    if (event.detail.value === 'naming') {
-      this.toggleNaming();
-    } else if (event.detail.value === 'accidental') {
-      this.toggleAccidental();
-    }
+  handleSelectNaming = ({ detail }: { detail: { value: string }}) => {
+    this.selectNaming(detail.value);
+  }
+
+  handleSelectAccidental = ({ detail }: { detail: { value: string }}) => {
+    this.selectAccidental(detail.value);
   }
 
   handleTune = slinkyNum => (event) => {
     this.selectTuning(Object.assign([], this.tuning, { [slinkyNum]: event.detail.text }));
   }
 
-  handleSelectScale = (scaleId: number) => () => {
-    this.selectScale(scaleId);
+  handleSelectScale = ({ detail }: { detail: { value: string }}) => {
+    this.selectScale(detail.value);
   }
 
   handleRange = (event) => {
     const { value } = event.target;
     this.selectRoot(value === 0 ? null : stringifyNote(value));
-    event.srcElement.shadowRoot.querySelector('.range-pin').innerHTML = value === 0 ? 'All' : stringifyNote(value);
+    event.srcElement.shadowRoot.querySelector('.range-pin').innerHTML = value === 0 ? 'All' : stringifyNoteUTF(value, this.isFlat);
+  }
+
+  handleSlinkRange = index => (event) => {
+    this.tuneString({
+      stringNum: index,
+      pitch: stringifyNote(event.detail.value),
+    });
+  }
+
+  handleSetString = num => () => {
+    this.setString(num);
   }
 
   renderDot(fretIndex: number): any {
@@ -81,32 +99,47 @@ export class GuitarPage {
     }
   }
 
+  renderStringButton(slinkNum: number): any {
+    return (
+      <li class="flex is-column">
+        <a
+          onClick={this.handleSetString(slinkNum)}
+          class={`pagination-link  ${this.tuning.value.length === slinkNum ? 'is-current' : ''}`}
+          aria-label={`${slinkNum} strings`}
+        >
+          {slinkNum}
+        </a>
+        <span>{stringifyNoteUTF(parseNote(this.tuning.value[slinkNum - 1]), this.isFlat)}</span>
+      </li>
+    );
+  }
+
 
   render() {
     return [
       <ion-header>
-        <ion-toolbar color="tertiary">
+        <ion-toolbar color="primary">
           <ion-buttons slot="start">
             <ion-menu-button></ion-menu-button>
           </ion-buttons>
-          <ion-title>Guitar Roots {this.root ? ` - ${stringifyNote(this.root)}` : ''}</ion-title>
+          <ion-title>Guitar Roots {this.root ? ` - ${stringifyNoteUTF(this.root, this.isFlat)}` : ''}</ion-title>
         </ion-toolbar>
       </ion-header>,
 
-      <ion-content padding>
+      <ion-content>
         
         <fret-board />
 
-        <div padding-top class="tile is-ancestor">
+        <div padding-horizontal class="root-range tile is-ancestor">
           <div class="tile is-parent">
-            <div class="tile is-child is-12 box">
+            <div class="tile is-child is-12 box notification background-color--primary">
               <ion-range
                 min={0}
                 max={12}
                 step={1}
                 snaps={true}
                 pin={true}
-                color="secondary"
+                color="tertiary"
                 mode="ios"
                 onIonChange={this.handleRange}
               ></ion-range>
@@ -114,133 +147,134 @@ export class GuitarPage {
           </div>
         </div>
 
-        <div class="tile is-ancestor">
+        <div padding-horizontal class="tile is-ancestor background-color--light">
           <div class="tile is-parent is-4">
-            <article class="tile is-child box notification is-primary">
+            <article class="tile is-child box notification background-color--primary">
+              <p class="title">Scales</p>
+              <p class="subtitle">Specify interval patterns</p>
               <div class="content">
-                <p class="title">Scales</p>
-                <p class="subtitle">View scales based on the root</p>
-                <div class="content">
-                  <ion-list class="scale-list">
-                    <ion-radio-group>
-                      {this.scales.map(scale =>
-                        <ion-item>
-                          <ion-label text-capitalize>{scale.label}</ion-label>
-                          <ion-radio
-                            color="secondary"
-                            value={scale.label}
-                            checked={scale.id === this.scale.id}
-                            onIonSelect={this.handleSelectScale(scale.id)}
-                            mode="ios"
-                          />
-                        </ion-item>
-                      )}
-                    </ion-radio-group>
-                  </ion-list>
-                </div>
+                <ion-list class="scale-list">
+                  <ion-radio-group onIonChange={this.handleSelectScale}>
+                    {this.scales.map(scale =>
+                      <ion-item>
+                        <ion-label text-capitalize>{scale.label}</ion-label>
+                        <ion-radio
+                          color="secondary"
+                          value={scale.id}
+                          checked={scale.id === this.scale.id}
+                          mode="ios"
+                        />
+                      </ion-item>
+                    )}
+                  </ion-radio-group>
+                </ion-list>
               </div>
             </article>
           </div>
           <div class="tile is-vertical">
             <div class="tile">
-              <div class="tile is-parent is-vertical">
-                <article class="tile is-child box notification is-info">
-                  <p class="title">Visualize...</p>
-                  <div class="level">
-                    <div class="level-item has-text-centered">
-                      <div>
-                        <p class="heading">Pitch Letters</p>
-                        <ion-toggle
-                          value="naming"
-                          checked={!this.isNumberSystem}
-                          onIonChange={this.handleVisualToggle}
-                          color="tertiary"
-                        />
-                      </div>
-                    </div>
-                    <div class="level-item has-text-centered">
-                      <div>
-                        <p class="heading">Number System</p>
-                        <ion-toggle
-                          value="naming"
-                          checked={this.isNumberSystem}
-                          onIonChange={this.handleVisualToggle}
-                          color="tertiary"
-                        />
-                      </div>
-                    </div>
-                    <div class="level-item has-text-centered">
-                      <div>
-                        <p class="heading">Flat Accidental</p>
-                        <ion-toggle
-                          value="accidental"
-                          checked={this.isFlat}
-                          onIonChange={this.handleVisualToggle}
-                          color="danger"
-                        />
-                      </div>
-                    </div>
-                    
-                    <div class="level-item has-text-centered">
-                      <div>
-                        <p class="heading">Sharp Accidental</p>
-                        <ion-toggle
-                          value="accidental"
-                          checked={!this.isFlat}
-                          onIonFocus={this.handleVisualToggle}
-                          color="danger"
-                        />
-                      </div>
-                    </div>
+              <div class="tile is-parent">
+                <article class="tile is-child box notification background-color--primary">
+                  <p class="title">Naming</p>
+                  <div class="content">
+                    <ion-list class="scale-list">
+                      <ion-radio-group onIonChange={this.handleSelectNaming}>
+                        <ion-item>
+                          <ion-label>Pitch Letters</ion-label>
+                          <ion-radio
+                            color="secondary"
+                            value="pitchClass"
+                            checked={this.isPitchClass}
+                            mode="ios"
+                          />
+                        </ion-item>
+                        <ion-item>
+                          <ion-label>Number System</ion-label>
+                          <ion-radio
+                            color="secondary"
+                            value="numberSystem"
+                            checked={this.isNumberSystem}
+                            mode="ios"
+                          />
+                        </ion-item>
+                      </ion-radio-group>
+                    </ion-list>
                   </div>
                 </article>
-                <article class="tile is-child box notification is-success">
-                  <p class="title">...tiles</p>
-                  <p class="subtitle">Bottom tile</p>
+              </div>
+              <div class="tile is-parent">
+                <article class="tile is-child box notification background-color--primary">
+                  <p class="title">Accidental</p>
+                  <div class="content">
+                    <ion-list class="scale-list">
+                      <ion-radio-group onIonChange={this.handleSelectAccidental}>
+                        <ion-item>
+                          <ion-label>Flat</ion-label>
+                          <ion-radio
+                            color="secondary"
+                            value="flat"
+                            checked={this.isFlat}
+                            mode="ios"
+                          />
+                        </ion-item>
+                        <ion-item>
+                          <ion-label>Sharp</ion-label>
+                          <ion-radio
+                            color="secondary"
+                            value="sharp"
+                            checked={this.isSharp}
+                            mode="ios"
+                          />
+                        </ion-item>
+                      </ion-radio-group>
+                    </ion-list>
+                  </div>
                 </article>
               </div>
             </div>
             <div class="tile is-parent">
-              <article class="tile is-child box notification is-danger">
-                <p class="title">Tuning</p>
-                <p class="subtitle">Try something new</p>
+              <article class="tile is-child box notification background-color--primary">
+                <div class="level ">
+                  <div class="level-left">
+                    <p class="title">Tuning</p>
+                    <p class="subtitle"></p>
+                  </div>
+
+                  <div class="level-right">
+                    <div class="pagination">
+                      <ul class="pagination-list flex is-row is-top">
+                        {this.renderStringButton(1)}
+                        {this.renderStringButton(2)}
+                        {this.renderStringButton(3)}
+                        {this.renderStringButton(4)}
+                        {this.renderStringButton(5)}
+                        {this.renderStringButton(6)}
+                        {this.renderStringButton(7)}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                
                 <div class="content">
+                  {this.tuning.value.map((slink, index) => (
+                    <ion-range
+                      no-padding
+                      min={1}
+                      max={12}
+                      step={1}
+                      name={`${index}`}
+                      value={parseNote(slink)}
+                      snaps={true}
+                      color="tertiary"
+                      mode="md"
+                      onIonChange={this.handleSlinkRange(index)}
+                    ></ion-range>
+                  ))}
                 </div>
               </article>
             </div>
           </div>
         </div>
-
-        {/* <nav class="panel">
-          <p class="panel-heading">
-            Scales
-          </p>
-          <div class="panel-block">
-            <p class="control has-icons-left">
-              <input class="input is-small" type="text" placeholder="search" />
-              <span class="icon is-small is-left">
-                <ion-icon name="search" />
-              </span>
-            </p>
-          </div>
-          <div class="panel-block">
-            <ion-list>
-              <ion-radio-group>
-                {this.scales.map(scale =>
-                  <ion-item>
-                    <ion-label text-capitalize>{scale.label}</ion-label>
-                    <ion-radio
-                      color="secondary"
-                      value={scale.label}
-                      onIonSelect={this.handleSetMode(scale)}
-                      mode="ios"
-                    />
-                  </ion-item>
-                )}
-              </ion-radio-group>
-            </ion-list>
-          </div>
-        </nav> */}
 
       </ion-content>
     ];

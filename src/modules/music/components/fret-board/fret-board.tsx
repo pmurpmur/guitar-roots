@@ -16,6 +16,7 @@ export class FretBoard {
   @State() board: number[][];
   @State() slinks: Tuning;
   @State() notes: NoteDetails[];
+  @State() isNumberSystem: boolean;
 
 
   componentWillLoad() {
@@ -23,6 +24,7 @@ export class FretBoard {
       board: fromMusic.getFilteredNoteMatrix(state),
       slinks: fromMusic.getSelectedTuning(state),
       notes: fromMusic.getVisualOptions(state),
+      isNumberSystem: fromMusic.isNumberSystem(state),
     }));
   }
 
@@ -37,39 +39,60 @@ export class FretBoard {
     }
   }
 
+  renderNoteBubble(note: NoteDetails): any {
+    if (note) {
+      if (this.isNumberSystem && note.number !== null) {
+        return (
+          <div class="value-bubble">
+            {`${note.number}`}
+          </div>
+        );
+      } else {
+        return (
+          <div class="value-bubble">
+            {note.letter}{note.accidental === 'b' ? '\u266D' : ''}{note.accidental === '#' ? '\u266F' : ''}
+          </div>
+        );
+      }
+    }
+    return <div class="value-bubble hide" />;
+  }
+
 
   render() {
     return (
-      <div class="fret-board">
-        {this.slinks.value.map((_slink, index: number) => <div class={`slink slink_${index + 1} slinks_${this.slinks.value.length}`} />)}
-        
-        {this.board.map((fret, iFret) => iFret === 0 ? [
-            <div class="open-notes">
-              {fret.map(note =>
-                <div class="note">
-                  {note ? <div class="value-bubble">{this.notes[note].pitchClass}</div> : <div class="value-bubble hide" />} 
-                </div>
-              )}
-            </div>,
-            <div class="nut" />,
-          ] : (
-            <div class="fret-container">
-              <div class="above-fret">
-                {iFret}
-              </div>
-              <div class="dots">
-                {this.renderDot(iFret)}
-              </div>
-              <div class="fret">
+      <div class="fret-board-wrapper">
+        <div class="fret-board">
+          {this.slinks.value.map((_slink, index: number) => <div class={`slink slink_${index + 1} slinks_${this.slinks.value.length}`} />)}
+          
+          {this.board.map((fret, iFret) => iFret === 0 ? [
+              <div class="open-notes">
                 {fret.map(note =>
                   <div class="note">
-                    {note ? <div class="value-bubble">{this.notes[note].pitchClass}</div> : <div class="value-bubble hide" />} 
+                    {this.renderNoteBubble(this.notes[note])}
                   </div>
                 )}
+              </div>,
+              <div class="nut" />,
+            ] : (
+              <div class="fret-container">
+                <div class="above-fret">
+                  {iFret}
+                </div>
+                <div class="dots">
+                  {this.renderDot(iFret)}
+                </div>
+                <div class="fret">
+                  {fret.map(note =>
+                    <div class="note">
+                      {this.renderNoteBubble(this.notes[note])}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          )
-        )}
+            )
+          )}
+        </div>
       </div>
     );
   }

@@ -1,4 +1,4 @@
-import { set, lens, prop, assoc, over, lensProp, not } from 'ramda';
+import { set, lens, prop, assoc } from 'ramda';
 
 import { createReducer } from '../../../helpers/redux-utilities';
 import { parseNote } from '../services/note.service';
@@ -10,22 +10,22 @@ import { Note as n } from '../models/note.model';
 export interface State {
   notes: n[],
   selectedNote: n | null,
-  numberSystem: boolean,
-  flat: boolean,
+  naming: string,
+  accidental: string,
 };
 
 export const initialState: State = {
   notes: [n.A, n.AB, n.B, n.C, n.CD, n.D, n.DE, n.E, n.F, n.FG, n.G, n.GA],
   selectedNote: null,
-  numberSystem: false,
-  flat: true,
+  naming: 'pitchClass',
+  accidental: 'flat',
 };
 
 
 export const reducer = createReducer(initialState, {
   [actions.SELECT]: (payload) => set(lens(prop('selectedNote'), assoc('selectedNote')))(parseNote(payload)),
-  [actions.TOGGLE_NAMING]: () => over(lensProp('numberSystem'), not),
-  [actions.TOGGLE_ACCIDENTAL]: () => over(lensProp('flat'), not),
+  [actions.SELECT_NAMING]: assoc('naming'),
+  [actions.SELECT_ACCIDENTAL]: assoc('accidental'),
 });
 
 
@@ -34,5 +34,7 @@ export const reducer = createReducer(initialState, {
 
 export const getNotes = (state: State) => state.notes;
 export const getSelectedNote = (state: State) => state.selectedNote;
-export const isFlat = (state: State) => state.flat;
-export const isNumberSystem = (state: State) => state.numberSystem;
+export const isPitchClass = (state: State) => state.naming === 'pitchClass';
+export const isNumberSystem = (state: State) => state.naming === 'numberSystem';
+export const isFlat = (state: State) => state.accidental === 'flat';
+export const isSharp = (state: State) => state.accidental === 'sharp';

@@ -5,7 +5,7 @@ export interface Scale {
 }
 
 export const defaultScales: { [label: string]: string[] } = {
-  'default': ['1P'],
+  'octave (default)': ['1P'],
   'chromatic': ['1P', '2m', '2M', '3m', '3M', '4P', '4A', '5P', '6m', '6M', '7m', '7M'],
   'lydian': ['1P', '2M', '3M', '4A', '5P', '6M', '7M'],
   'major': ['1P', '2M', '3M', '4P', '5P', '6M', '7M'],

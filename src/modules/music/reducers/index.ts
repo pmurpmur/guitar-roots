@@ -32,8 +32,10 @@ const getModuleState = (state: any) => state[MODULE];
 const getNoteState = createSelector(getModuleState, (state: State) => state.note);
 export const getNotes = createSelector(getNoteState, fromNote.getNotes);
 export const getSelectedNote = createSelector(getNoteState, fromNote.getSelectedNote);
-export const isFlat = createSelector(getNoteState, fromNote.isFlat);
+export const isPitchClass = createSelector(getNoteState, fromNote.isPitchClass);
 export const isNumberSystem = createSelector(getNoteState, fromNote.isNumberSystem);
+export const isFlat = createSelector(getNoteState, fromNote.isFlat);
+export const isSharp = createSelector(getNoteState, fromNote.isSharp);
 
 const getScaleState = createSelector(getModuleState, (state: State) => state.scale);
 export const getScales = createSelector(getScaleState, fromScale.getItems);
@@ -51,7 +53,7 @@ export const getSelectedNotes = createSelector(
   getSelectedNote,
   getSelectedScale,
   (rootNote: Note, scale: Scale): number[] => {
-    return interval.toSemitones(scale.value).map(semitoneDistance => rootNote + semitoneDistance);
+    return interval.toSemitones(scale.value).map(semitoneDistance => ((rootNote - 1) + semitoneDistance) % 12 + 1);
   },
 );
 
@@ -73,7 +75,7 @@ export const getNoteMatrix = createSelector(
   getSelectedTuning,
   (tuning: Tuning): number[][] => {
     return note.createNoteMatrix(tuning.value, {
-      length: 12,
+      length: 13,
       groupBy: 'semitone',
     });
   },
@@ -99,17 +101,28 @@ export const getFilteredNoteMatrix = createSelector(
  */
 export const getVisualOptions = createSelector(
   getNotes,
+  getSelectedNote,
   getSelectedNotes,
   getNumberSystemIntervals,
   isFlat,
-  (notes: Note[], selectedNotes: number[], numberIntervals: number[], isFlat: boolean): { [id: string]: NoteDetails } => {
-    return notes.reduce((prev: { [id: string]: NoteDetails }, curr: Note) => ({
-      ...prev,
-      [curr]: {
-        note: curr,
-        pitchClass: note.stringifyNote(curr, isFlat),
-        scaleNumber: numberIntervals ? numberIntervals[selectedNotes.indexOf(curr)] : null,
-      },
-    }), {});
+  (notes: Note[], rootNote: Note, selectedNotes: number[], numberIntervals: number[], isFlat: boolean): { [id: string]: NoteDetails } => {
+    return notes.reduce((prev: { [id: string]: NoteDetails }, curr: Note) => {
+      const flat = note.stringifyNote(curr, true);
+      const sharp = note.stringifyNote(curr, false);
+      const isPure = flat !== sharp;
+
+      return {
+        ...prev,
+        [curr]: {
+          note: curr,
+          letter: isFlat ? flat[0] : sharp[0],
+          accidental: isPure ? (isFlat ? 'b' : '#') : null,
+          modifier: null,
+          octave: null,
+          number: rootNote !== null ? `${numberIntervals[selectedNotes.indexOf(curr)]}` : null,
+          color: note.colorizeNotes(selectedNotes.indexOf(curr)),
+        },
+      }
+    }, {});
   },
 );

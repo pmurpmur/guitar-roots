@@ -8,14 +8,14 @@ export const SelectAction = (payload: string) => async (dispatch) => dispatch({
   payload,
 });
 
-export const TOGGLE_NAMING = `[${MODULE}][${TYPE}] Toggle Naming`;
-export const ToggleNamingAction = (payload: string) => async (dispatch) => dispatch({
-  type: TOGGLE_NAMING,
+export const SELECT_NAMING = `[${MODULE}][${TYPE}] Select Naming`;
+export const SelectNamingAction = (payload: string) => async (dispatch) => dispatch({
+  type: SELECT_NAMING,
   payload,
 });
 
-export const TOGGLE_ACCIDENTAL = `[${MODULE}][${TYPE}] Toggle Accidental`;
-export const ToggleAccidentalAction = (payload: string) => async (dispatch) => dispatch({
-  type: TOGGLE_ACCIDENTAL,
+export const SELECT_ACCIDENTAL = `[${MODULE}][${TYPE}] Select Accidental`;
+export const SelectAccidentalAction = (payload: string) => async (dispatch) => dispatch({
+  type: SELECT_ACCIDENTAL,
   payload,
 });

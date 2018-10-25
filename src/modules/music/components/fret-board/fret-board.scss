@@ -1,9 +1,21 @@
 $stringNum: 6;
 
+.fret-board-wrapper {
+  display: flex;
+  overflow-x: scroll;
+  padding: 3em 0 1em 0.5em;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    background: transparent; 
+  }
+}
+
 .fret-board {
   position: relative;
   display: flex;
-  margin-top: 50px;
+  flex-basis: 100%;
+  padding-right: 1em;
 
   .open-notes {
     display: flex;
@@ -11,12 +23,6 @@ $stringNum: 6;
     justify-content: center;
     align-items: flex-end;
     z-index: 1;
-
-    .value-bubble {
-      height: 26px;
-      width: 26px;
-      margin: 1px 0;
-    }
   }
 
   .nut {
@@ -52,7 +58,7 @@ $stringNum: 6;
   }
 
   .note {
-    padding: 0.125em 0;
+    padding: 0.125em 0.5em;
   }
 
   .dots {
@@ -75,18 +81,19 @@ $stringNum: 6;
   }
 
   .value-bubble {
-    height: 28px;
-    width: 28px;
-    max-width: 4vw;
+    min-height: 28px;
+    min-width: 20px;
     max-height: 4vw;
-    background-color: rgba(var(--ion-color-primary-rgb), 0.85);
+    padding: 0 4px;
+    background-color: rgba(var(--ion-color-dark-rgb), 0.85);
     color: white;
     font-size: 0.8em;
     font-weight: 500;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
+    border-radius: 14px;
+    white-space: nowrap;
 
     &.hide {
       visibility: hidden;

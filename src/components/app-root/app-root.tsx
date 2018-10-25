@@ -14,6 +14,12 @@ export class AppRoot {
 
   componentWillLoad() {
     this.store.setStore(configureStore({}));
+
+    if (process.env.NODE_ENV === 'production') {
+      console.debug('Env: prod');
+    } else {
+      console.debug('Env: dev');
+    }
   }
 
 
@@ -44,7 +50,7 @@ export class AppRoot {
         <ion-split-pane when={false}>
           <ion-menu>
             <ion-header>
-              <ion-toolbar color="tertiary">
+              <ion-toolbar color="primary">
                 <ion-title>About</ion-title>
               </ion-toolbar>
             </ion-header>

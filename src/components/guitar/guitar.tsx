@@ -3,6 +3,7 @@ import { Store, Action } from '@stencil/redux';
 
 import { stringifyNote, stringifyNoteUTF, parseNote } from '../../modules/music/services/note.service';
 
+import * as utils from '../../helpers/url-utilities';
 import * as fromMusic from '../../modules/music/reducers';
 import * as actions from '../../modules/music/actions';
 import { Scale, Note, Tuning } from '../../modules/music/models';
@@ -30,7 +31,7 @@ export class GuitarPage {
   selectNaming: Action;
   selectAccidental: Action;
   tuneString: Action;
-  setString: Action;
+  setStrings: Action;
 
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => ({
@@ -51,8 +52,69 @@ export class GuitarPage {
       selectNaming: actions.note.SelectNamingAction,
       selectAccidental: actions.note.SelectAccidentalAction,
       tuneString: actions.tuning.TuneStringAction,
-      setString: actions.tuning.SetStringsAction,
+      setStrings: actions.tuning.SetStringsAction,
     });
+
+    const dispatchURLState = (param: { key: string, value: string }) => {
+      const [ key, keyParam ] = param.key.split(':');
+      const value = param.value;
+      
+      switch (key) {
+        case 'root': {
+          this.selectRoot(value);
+        } break;
+        case 'naming': {
+          this.selectNaming(value);
+        } break;
+        case 'accidental': {
+          this.selectAccidental(value);
+        } break;
+        case 'tuning': {
+          this.selectTuning(value);
+        } break;
+        case 'strings': {
+          this.setStrings(value);
+        } break;
+        case 'string': {
+          this.tuneString({
+            stringNum: keyParam,
+            pitch: value,
+          });
+        } break;
+        case 'scale': {
+          this.selectScale(value);
+        } break;
+      }
+    };
+
+    // update state based on hash
+    const prevHashParams = utils.getHashParamsList(window.location.hash);
+    prevHashParams.forEach(param => dispatchURLState(param));
+
+    // live update URL hash changes
+    window.onhashchange = (event: any) => {
+      const oldHash = event.oldURL.substring(event.oldURL.indexOf('#'));
+      const newHash = event.newURL.substring(event.newURL.indexOf('#'));
+      
+      if (/##/.test(event.newURL)) {
+        utils.removeHashBlock();
+      } else if (oldHash.startsWith('#') && !oldHash.startsWith('##') && newHash.startsWith('#') && !newHash.startsWith('##')) {
+        const oldHashParams = utils.getHashParamsEntities(oldHash);
+        const newHashParams = utils.getHashParamsList(newHash);
+
+        newHashParams.forEach((newParam) => {
+          if (newParam.value !== oldHashParams[newParam.key]) {
+            dispatchURLState(newParam);
+          }
+        });
+      }
+    }
+  }
+
+  handleRange = (event) => {
+    const { value } = event.target;
+    this.selectRoot(value === 0 ? null : stringifyNote(value));
+    event.srcElement.shadowRoot.querySelector('.range-pin').innerHTML = value === 0 ? 'All' : stringifyNoteUTF(value, this.isFlat);
   }
 
   handleSelectNaming = ({ detail }: { detail: { value: string }}) => {
@@ -71,12 +133,6 @@ export class GuitarPage {
     this.selectScale(detail.value);
   }
 
-  handleRange = (event) => {
-    const { value } = event.target;
-    this.selectRoot(value === 0 ? null : stringifyNote(value));
-    event.srcElement.shadowRoot.querySelector('.range-pin').innerHTML = value === 0 ? 'All' : stringifyNoteUTF(value, this.isFlat);
-  }
-
   handleSlinkRange = index => (event) => {
     this.tuneString({
       stringNum: index,
@@ -85,7 +141,7 @@ export class GuitarPage {
   }
 
   handleSetString = num => () => {
-    this.setString(num);
+    this.setStrings(num);
   }
 
   renderDot(fretIndex: number): any {
@@ -183,7 +239,7 @@ export class GuitarPage {
                           <ion-label>Pitch Letters</ion-label>
                           <ion-radio
                             color="secondary"
-                            value="pitchClass"
+                            value="pitch"
                             checked={this.isPitchClass}
                             mode="ios"
                           />
@@ -192,7 +248,7 @@ export class GuitarPage {
                           <ion-label>Number System</ion-label>
                           <ion-radio
                             color="secondary"
-                            value="numberSystem"
+                            value="number"
                             checked={this.isNumberSystem}
                             mode="ios"
                           />

@@ -1,7 +1,7 @@
 import { Component, Prop, Listen } from '@stencil/core';
 import { Store } from '@stencil/redux';
 
-import { configureStore } from '../../app/app.store'
+import { configureStore } from '../../app/app.store';
 
 
 @Component({

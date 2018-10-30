@@ -17,7 +17,7 @@ export interface State {
 export const initialState: State = {
   notes: [n.A, n.AB, n.B, n.C, n.CD, n.D, n.DE, n.E, n.F, n.FG, n.G, n.GA],
   selectedNote: null,
-  naming: 'pitchClass',
+  naming: 'pitch',
   accidental: 'flat',
 };
 
@@ -34,7 +34,7 @@ export const reducer = createReducer(initialState, {
 
 export const getNotes = (state: State) => state.notes;
 export const getSelectedNote = (state: State) => state.selectedNote;
-export const isPitchClass = (state: State) => state.naming === 'pitchClass';
-export const isNumberSystem = (state: State) => state.naming === 'numberSystem';
+export const isPitchClass = (state: State) => state.naming === 'pitch';
+export const isNumberSystem = (state: State) => state.naming === 'number';
 export const isFlat = (state: State) => state.accidental === 'flat';
 export const isSharp = (state: State) => state.accidental === 'sharp';

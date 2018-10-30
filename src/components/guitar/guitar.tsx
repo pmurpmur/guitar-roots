@@ -197,6 +197,7 @@ export class GuitarPage {
                 pin={true}
                 color="tertiary"
                 mode="ios"
+                value={this.root}
                 onIonChange={this.handleRange}
               ></ion-range>
             </div>

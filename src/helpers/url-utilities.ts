@@ -24,7 +24,7 @@ export function setHashParam(name: string, value: string): void {
   
   const hash = window.location.hash.startsWith('##') ? window.location.hash : `#${window.location.hash}`;
   if (hash.match(regex) === null) {
-    window.location.hash = `${hash.length === 0 ? '' : `${hash}&`}${name}=${value}`;
+    window.location.hash = `${(hash.startsWith('##') && hash.length === 2 || hash.startsWith('#') && hash.length === 1) ? '' : `${hash}&`}${name}=${value}`;
   } else {
     window.location.hash = hash.replace(regex,`$1${value}$2`);
   }

@@ -2,21 +2,24 @@ import { combineReducers } from 'redux';
 import { createSelector } from 'reselect';
 
 import { note, interval } from '../services';
-import { NoteDetails, Note, Scale, Tuning } from '../models';
+import { NoteDetails, Note, Scale } from '../models';
 
 import MODULE from '..';
+import * as fromInstrument from './instrument.reducer';
 import * as fromNote from './note.reducer';
 import * as fromScale from './scale.reducer';
 import * as fromTuning from './tuning.reducer';
 
 
 export interface State {
+  instrument: fromInstrument.State,
   note: fromNote.State,
   scale: fromScale.State,
   tuning: fromTuning.State,
 }
 
 export const reducer = (combineReducers as any)({
+  instrument: fromInstrument.reducer,
   note: fromNote.reducer,
   scale: fromScale.reducer,
   tuning: fromTuning.reducer,
@@ -28,6 +31,9 @@ export const reducer = (combineReducers as any)({
 // Returns a function that maps from the larger state tree to a smaller state.
 
 const getModuleState = (state: any) => state[MODULE];
+
+const getInstrumentState = createSelector(getModuleState, (state: State) => state.instrument);
+export const getFrets = createSelector(getInstrumentState, fromInstrument.getFrets);
 
 const getNoteState = createSelector(getModuleState, (state: State) => state.note);
 export const getNotes = createSelector(getNoteState, fromNote.getNotes);
@@ -43,7 +49,7 @@ export const getSelectedScale = createSelector(getScaleState, fromScale.getSelec
 
 const getTuningState = createSelector(getModuleState, (state: State) => state.tuning);
 export const getTunings = createSelector(getTuningState, fromTuning.getItems);
-export const getSelectedTuning = createSelector(getTuningState, fromTuning.getSelectedEntity);
+export const getSelectedTuning = createSelector(getTuningState, fromTuning.getTuning);
 
 
 /**
@@ -73,9 +79,10 @@ export const getNumberSystemIntervals = createSelector(
  */
 export const getNoteMatrix = createSelector(
   getSelectedTuning,
-  (tuning: Tuning): number[][] => {
-    return note.createNoteMatrix(tuning.value, {
-      length: 13,
+  getFrets,
+  (tuning: string[], frets: number): number[][] => {
+    return note.createNoteMatrix(tuning, {
+      length: frets,
       groupBy: 'semitone',
     });
   },

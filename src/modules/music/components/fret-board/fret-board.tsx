@@ -2,7 +2,7 @@ import { Component, Prop, State } from '@stencil/core';
 import { Store } from '@stencil/redux';
 
 import * as fromMusic from '../../reducers';
-import { NoteDetails, Tuning } from '../../models';
+import { NoteDetails } from '../../models';
 
 
 @Component({
@@ -14,7 +14,7 @@ export class FretBoard {
   @Prop({ context: 'store' }) store: Store;
 
   @State() board: number[][];
-  @State() slinks: Tuning;
+  @State() slinks: string[];
   @State() notes: NoteDetails[];
   @State() isNumberSystem: boolean;
 
@@ -29,9 +29,10 @@ export class FretBoard {
   }
 
   renderDot(fretIndex: number): any {
-    if (fretIndex === 3 || fretIndex === 5 || fretIndex === 7 || fretIndex === 9) {
+    const intervalIndex = fretIndex % 12;
+    if (intervalIndex === 3 || intervalIndex === 5 || intervalIndex === 7 || intervalIndex === 9) {
       return <div class="dot" />;
-    } else if (fretIndex === 12) {
+    } else if (intervalIndex === 0) {
       return [
         <div class="dot" />,
         <div class="dot" />,
@@ -63,7 +64,7 @@ export class FretBoard {
     return (
       <div class="fret-board-wrapper">
         <div class="fret-board">
-          {this.slinks.value.map((_slink, index: number) => <div class={`slink slink_${index + 1} slinks_${this.slinks.value.length}`} />)}
+          {this.slinks.map((_slink, index: number) => <div class={`slink slink_${index + 1} slinks_${this.slinks.length}`} />)}
           
           {this.board.map((fret, iFret) => iFret === 0 ? [
               <div class="open-notes">

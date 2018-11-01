@@ -1,14 +1,11 @@
-import { setHashParam } from '../../../helpers/url-utilities';
+import { createHashAction } from '../../../helpers/redux-utilities';
 
 import MODULE from '..';
 const TYPE = 'scale';
 
 
-export const SELECT = `[${MODULE}][${TYPE}] Select Scale`;
-export const SelectAction = (payload: string) => async (dispatch) => {
-  setHashParam('scale', payload);
-  return dispatch({
-    type: SELECT,
-    payload,
-  });
-}
+export const SELECT = `[${MODULE}][${TYPE}] Select`;
+export const SelectAction = createHashAction({
+  type: SELECT,
+  hashKey: 'scale', 
+});

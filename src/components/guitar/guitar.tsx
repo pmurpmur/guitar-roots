@@ -1,12 +1,15 @@
 import { Component, Prop, State } from '@stencil/core';
-import { Store, Action } from '@stencil/redux';
+import { InputChangeEvent } from '@ionic/core';
+import { Store } from '@stencil/redux';
+
+import * as utils from '../../helpers/url-utilities';
+import { getHashAction } from '../../helpers/redux-utilities';
 
 import { stringifyNote, stringifyNoteUTF, parseNote } from '../../modules/music/services/note.service';
 
-import * as utils from '../../helpers/url-utilities';
 import * as fromMusic from '../../modules/music/reducers';
-import * as actions from '../../modules/music/actions';
-import { Scale, Note, Tuning } from '../../modules/music/models';
+import { note, scale, tuning } from '../../modules/music/actions';
+import { Scale, Note } from '../../modules/music/models';
 
 
 @Component({
@@ -18,20 +21,14 @@ export class GuitarPage {
 
   @State() root: Note;
   @State() scale: Scale;
-  @State() tuning: Tuning;
+  @State() tuning: string[];
   @State() isPitchClass: boolean;
   @State() isNumberSystem: boolean;
   @State() isFlat: boolean;
   @State() isSharp: boolean;
   @State() scales: Scale[];
 
-  selectRoot: Action;
-  selectScale: Action;
-  selectTuning: Action;
-  selectNaming: Action;
-  selectAccidental: Action;
-  tuneString: Action;
-  setStrings: Action;
+  dispatch: Function;
 
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => ({
@@ -46,102 +43,67 @@ export class GuitarPage {
     }));
 
     this.store.mapDispatchToProps(this, {
-      selectRoot: actions.note.SelectAction,
-      selectScale: actions.scale.SelectAction,
-      selectTuning: actions.tuning.SelectAction,
-      selectNaming: actions.note.SelectNamingAction,
-      selectAccidental: actions.note.SelectAccidentalAction,
-      tuneString: actions.tuning.TuneStringAction,
-      setStrings: actions.tuning.SetStringsAction,
+      dispatch: action => async dispatch => dispatch(action),
     });
-
-    const dispatchURLState = (param: { key: string, value: string }) => {
-      const [ key, keyParam ] = param.key.split(':');
-      const value = param.value;
-      
-      switch (key) {
-        case 'root': {
-          this.selectRoot(value);
-        } break;
-        case 'naming': {
-          this.selectNaming(value);
-        } break;
-        case 'accidental': {
-          this.selectAccidental(value);
-        } break;
-        case 'tuning': {
-          this.selectTuning(value);
-        } break;
-        case 'strings': {
-          this.setStrings(value);
-        } break;
-        case 'string': {
-          this.tuneString({
-            stringNum: keyParam,
-            pitch: value,
-          });
-        } break;
-        case 'scale': {
-          this.selectScale(value);
-        } break;
-      }
-    };
 
     // update state based on hash
     const prevHashParams = utils.getHashParamsList(window.location.hash);
-    prevHashParams.forEach(param => dispatchURLState(param));
+    prevHashParams.forEach(param => this.dispatch(getHashAction(param)));
 
     // live update URL hash changes
     window.onhashchange = (event: any) => {
       const oldHash = event.oldURL.substring(event.oldURL.indexOf('#'));
       const newHash = event.newURL.substring(event.newURL.indexOf('#'));
       
-      if (/##/.test(event.newURL)) {
-        utils.removeHashBlock();
-      } else if (oldHash.startsWith('#') && !oldHash.startsWith('##') && newHash.startsWith('#') && !newHash.startsWith('##')) {
-        const oldHashParams = utils.getHashParamsEntities(oldHash);
-        const newHashParams = utils.getHashParamsList(newHash);
+      const oldHashParams = utils.getHashParamsEntities(oldHash);
+      const newHashParams = utils.getHashParamsList(newHash);
 
-        newHashParams.forEach((newParam) => {
-          if (newParam.value !== oldHashParams[newParam.key]) {
-            dispatchURLState(newParam);
-          }
-        });
-      }
+      newHashParams.forEach((newParam) => {
+        if (newParam.value !== oldHashParams[newParam.key]) {
+          this.dispatch(getHashAction(newParam));
+        }
+      });
     }
   }
 
-  handleRange = (event) => {
+  handleRootRange = (event) => {
     const { value } = event.target;
-    this.selectRoot(value === 0 ? null : stringifyNote(value));
-    event.srcElement.shadowRoot.querySelector('.range-pin').innerHTML = value === 0 ? 'All' : stringifyNoteUTF(value, this.isFlat);
+    this.dispatch(note.SelectRootAction(value === 0 ? null : stringifyNote(value)));
+    event.srcElement.shadowRoot.querySelector('.range-pin').innerHTML = value === 0 ? 'None' : stringifyNoteUTF(value, this.isFlat);
   }
 
-  handleSelectNaming = ({ detail }: { detail: { value: string }}) => {
-    this.selectNaming(detail.value);
+  handleSelectNaming = ({ detail }: CustomEvent<InputChangeEvent>) => {
+    this.dispatch(note.SelectNamingAction(detail.value));
   }
 
-  handleSelectAccidental = ({ detail }: { detail: { value: string }}) => {
-    this.selectAccidental(detail.value);
+  handleSelectAccidental = ({ detail }: CustomEvent<InputChangeEvent>) => {
+    this.dispatch(note.SelectAccidentalAction(detail.value));
   }
 
-  handleTune = slinkyNum => (event) => {
-    this.selectTuning(Object.assign([], this.tuning, { [slinkyNum]: event.detail.text }));
+  handleSelectScale = ({ detail }: CustomEvent<InputChangeEvent>) => {
+    this.dispatch(scale.SelectAction(detail.value));
   }
 
-  handleSelectScale = ({ detail }: { detail: { value: string }}) => {
-    this.selectScale(detail.value);
-  }
-
-  handleSlinkRange = index => (event) => {
-    this.tuneString({
-      stringNum: index,
-      pitch: stringifyNote(event.detail.value),
-    });
+  handleSlinkRange = index => ({ detail }: CustomEvent<InputChangeEvent>) => {
+    console.log('handleSlinkRange', index)
+    const tune = [ ...this.tuning ];
+    tune[index] = stringifyNote(detail.value);
+    this.dispatch(tuning.TuneAction(tune));
   }
 
   handleSetString = num => () => {
-    this.setStrings(num);
+    const standardTuning = ['E', 'B', 'G', 'D', 'A', 'E', 'B'];
+
+    const result = [];
+    for (let i = 0; i < num; i++) {
+      if (i < this.tuning.length) {
+        result.push(this.tuning[i]);
+      } else {
+        result.push(standardTuning[i]);
+      }
+    }
+
+    this.dispatch(tuning.TuneAction(result));
   }
 
   renderDot(fretIndex: number): any {
@@ -160,12 +122,12 @@ export class GuitarPage {
       <li class="flex is-column">
         <a
           onClick={this.handleSetString(slinkNum)}
-          class={`pagination-link  ${this.tuning.value.length === slinkNum ? 'is-current' : ''}`}
+          class={`pagination-link  ${this.tuning.length === slinkNum ? 'is-current' : ''}`}
           aria-label={`${slinkNum} strings`}
         >
           {slinkNum}
         </a>
-        <span>{stringifyNoteUTF(parseNote(this.tuning.value[slinkNum - 1]), this.isFlat)}</span>
+        <span>{stringifyNoteUTF(parseNote(this.tuning[slinkNum - 1]), this.isFlat)}</span>
       </li>
     );
   }
@@ -198,7 +160,7 @@ export class GuitarPage {
                 color="tertiary"
                 mode="ios"
                 value={this.root}
-                onIonChange={this.handleRange}
+                onIonChange={this.handleRootRange}
               ></ion-range>
             </div>
           </div>
@@ -313,7 +275,7 @@ export class GuitarPage {
                 </div>
                 
                 <div class="content">
-                  {this.tuning.value.map((slink, index) => (
+                  {this.tuning.map((slink, index) => (
                     <ion-range
                       no-padding
                       min={1}

@@ -110,28 +110,12 @@ $stringNum: 6;
     // x = string number
     // T = total string number
     // (% from top) = ((100 / T) * x) - (100 / (T * 2))
-    @for $i from 1 through 7 {
+    @for $i from 1 through 12 {
       &.slinks_#{$i} {
-        &.slink_1 {
-          top: calc(((100% / #{$i}) * 1) - (100% / (#{$i} * 2)));
-        }
-        &.slink_2 {
-          top: calc(((100% / #{$i}) * 2) - (100% / (#{$i} * 2)));
-        }
-        &.slink_3 {
-          top: calc(((100% / #{$i}) * 3) - (100% / (#{$i} * 2)));
-        }
-        &.slink_4 {
-          top: calc(((100% / #{$i}) * 4) - (100% / (#{$i} * 2)));
-        }
-        &.slink_5 {
-          top: calc(((100% / #{$i}) * 5) - (100% / (#{$i} * 2)));
-        }
-        &.slink_6 {
-          top: calc(((100% / #{$i}) * 6) - (100% / (#{$i} * 2)));
-        }
-        &.slink_7 {
-          top: calc(((100% / #{$i}) * 7) - (100% / (#{$i} * 2)));
+        @for $string from 1 through 12 {
+          &.slink_#{$string} {
+            top: calc(((100% / #{$i}) * #{$string}) - (100% / (#{$i} * 2)));
+          }
         }
       }
     }

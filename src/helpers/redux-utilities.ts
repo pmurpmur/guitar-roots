@@ -1,9 +1,13 @@
+import { setHashParam } from '../helpers/url-utilities';
+
 /**
  * Simple action interface
  */
 export interface Action {
-  type: string;
-  payload?: any;
+  type: string,
+  payload?: any,
+  meta?: any,
+  error?: boolean,
 }
 
 /**
@@ -20,6 +24,53 @@ export function createReducer(initialState, handlers) {
       return state;
     }
   }
+}
+
+/**
+ * Factory for reducer functions
+ */
+let hashParamsType: { [key: string]: string } = {};
+let hashParamsMap: { [key: string]: Function } = {};
+export function createHashAction({
+  type,
+  hashKey,
+  toHashValue = payload => payload,
+  fromHashValue = payload => payload,
+} : {
+  type: string,
+  hashKey: string,
+  toHashValue?: Function,
+  fromHashValue?: Function,
+}) {
+  if (!hashParamsType[hashKey]) {
+    hashParamsType = {
+      ...hashParamsType,
+      [hashKey]: type,
+    };
+  }
+
+  if (!hashParamsMap[hashKey]) {
+    hashParamsMap = {
+      ...hashParamsMap,
+      [hashKey]: fromHashValue,
+    };
+  }
+
+  return (payload: any) => {
+    setHashParam(hashKey, toHashValue(payload));
+
+    return dispatch => dispatch({
+      type: type,
+      payload: payload,
+    });
+  }
+}
+
+export function getHashAction(payload: { key: string, value: string }) {
+  return {
+    type: hashParamsType[payload.key],
+    payload: hashParamsMap[payload.key](payload.value),
+  };
 }
 
 /**

@@ -23,7 +23,7 @@ export const initialState: State = {
 
 
 export const reducer = createReducer(initialState, {
-  [actions.SELECT]: (payload) => set(lens(prop('selectedNote'), assoc('selectedNote')))(parseNote(payload)),
+  [actions.SELECT_ROOT]: (payload) => set(lens(prop('selectedNote'), assoc('selectedNote')))(parseNote(payload)),
   [actions.SELECT_NAMING]: assoc('naming'),
   [actions.SELECT_ACCIDENTAL]: assoc('accidental'),
 });

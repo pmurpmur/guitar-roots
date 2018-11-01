@@ -45,7 +45,7 @@ export class FretBoard {
       if (this.isNumberSystem && note.number !== null) {
         return (
           <div class="value-bubble">
-            {`${note.number}`}
+            {note.number}
           </div>
         );
       } else {

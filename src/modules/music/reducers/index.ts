@@ -68,7 +68,7 @@ export const getSelectedNotes = createSelector(
  */
 export const getNumberSystemIntervals = createSelector(
   getSelectedScale,
-  (scale: Scale): number[] => {
+  (scale: Scale): string[] => {
     return scale ? interval.toNumberSystem(scale.value) : null;
   },
 );
@@ -112,7 +112,7 @@ export const getVisualOptions = createSelector(
   getSelectedNotes,
   getNumberSystemIntervals,
   isFlat,
-  (notes: Note[], rootNote: Note, selectedNotes: number[], numberIntervals: number[], isFlat: boolean): { [id: string]: NoteDetails } => {
+  (notes: Note[], rootNote: Note, selectedNotes: number[], numberIntervals: string[], isFlat: boolean): { [id: string]: NoteDetails } => {
     return notes.reduce((prev: { [id: string]: NoteDetails }, curr: Note) => {
       const flat = note.stringifyNote(curr, true);
       const sharp = note.stringifyNote(curr, false);

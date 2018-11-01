@@ -10,6 +10,6 @@ export interface NoteDetails {
   accidental: string,
   modifier?: string,
   octave?: number,
-  number: number,
+  number: string,
   color: string,
 };

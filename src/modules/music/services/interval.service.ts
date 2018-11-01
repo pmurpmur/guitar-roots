@@ -51,6 +51,6 @@ export function fromSemitones(formula: number[], augmented = true): string[] {
 /**
  * Parse intervals to numbers
  */
-export function toNumberSystem(intervals: string[]): number[] {
-  return intervals.map(pos => parseInt(pos.match(/\d+/g)[0], 10));
+export function toNumberSystem(intervals: string[]): string[] {
+  return intervals.length > 7 ? intervals : intervals.map(pos => pos.match(/\d+/g)[0]);
 }

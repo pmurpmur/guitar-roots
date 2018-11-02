@@ -129,7 +129,7 @@ export const getVisualOptions = createSelector(
           modifier: null,
           octave: null,
           number: rootNote !== null ? `${numberIntervals[selectedNotes.indexOf(curr)]}` : null,
-          colorStyle: hasColor ? note.colorizeNotes(selectedNotes, curr) : null,
+          colorStyle: rootNote !== null && hasColor ? note.colorizeNotes(selectedNotes, curr) : null,
         },
       }
     }, {});

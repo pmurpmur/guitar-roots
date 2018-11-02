@@ -37,7 +37,7 @@ export const getFrets = createSelector(getInstrumentState, fromInstrument.getFre
 
 const getNoteState = createSelector(getModuleState, (state: State) => state.note);
 export const getNotes = createSelector(getNoteState, fromNote.getNotes);
-export const getSelectedNote = createSelector(getNoteState, fromNote.getSelectedNote);
+export const getRoot = createSelector(getNoteState, fromNote.getRoot);
 export const isPitchClass = createSelector(getNoteState, fromNote.isPitchClass);
 export const isNumberSystem = createSelector(getNoteState, fromNote.isNumberSystem);
 export const isFlat = createSelector(getNoteState, fromNote.isFlat);
@@ -56,7 +56,7 @@ export const getSelectedTuning = createSelector(getTuningState, fromTuning.getTu
  * Get selected notes within the rooted scale
  */
 export const getSelectedNotes = createSelector(
-  getSelectedNote,
+  getRoot,
   getSelectedScale,
   (rootNote: Note, scale: Scale): number[] => {
     return interval.toSemitones(scale.value).map(semitoneDistance => ((rootNote - 1) + semitoneDistance) % 12 + 1);
@@ -93,7 +93,7 @@ export const getNoteMatrix = createSelector(
  */
 export const getFilteredNoteMatrix = createSelector(
   getNoteMatrix,
-  getSelectedNote,
+  getRoot,
   getSelectedNotes,
   (noteMatrix: number[][], rootNote: Note, selectedNotes: number[]): number[][] => {
     if (rootNote === null) {
@@ -108,7 +108,7 @@ export const getFilteredNoteMatrix = createSelector(
  */
 export const getVisualOptions = createSelector(
   getNotes,
-  getSelectedNote,
+  getRoot,
   getSelectedNotes,
   getNumberSystemIntervals,
   isFlat,

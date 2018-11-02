@@ -32,7 +32,7 @@ export class GuitarPage {
 
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => ({
-      root: fromMusic.getSelectedNote(state),
+      root: fromMusic.getRoot(state),
       scale: fromMusic.getSelectedScale(state),
       tuning: fromMusic.getSelectedTuning(state),
       isPitchClass: fromMusic.isPitchClass(state),
@@ -85,7 +85,6 @@ export class GuitarPage {
   }
 
   handleSlinkRange = index => ({ detail }: CustomEvent<InputChangeEvent>) => {
-    console.log('handleSlinkRange', index)
     const tune = [ ...this.tuning ];
     tune[index] = stringifyNote(detail.value);
     this.dispatch(tuning.TuneAction(tune));

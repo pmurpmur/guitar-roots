@@ -44,6 +44,7 @@ $stringNum: 6;
       left: 0;
       font-weight: bold;
       text-align: center;
+      user-select: none;
     }
 
     .fret {
@@ -94,6 +95,8 @@ $stringNum: 6;
     justify-content: center;
     border-radius: 14px;
     white-space: nowrap;
+    user-select: none;
+    cursor: pointer;
 
     &.hide {
       visibility: hidden;

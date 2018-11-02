@@ -44,13 +44,13 @@ export class FretBoard {
     if (note) {
       if (this.isNumberSystem && note.number !== null) {
         return (
-          <div class="value-bubble">
+          <div class="value-bubble" style={note.colorStyle}>
             {note.number}
           </div>
         );
       } else {
         return (
-          <div class="value-bubble">
+          <div class="value-bubble" style={note.colorStyle}>
             {note.letter}{note.accidental === 'b' ? '\u266D' : ''}{note.accidental === '#' ? '\u266F' : ''}
           </div>
         );

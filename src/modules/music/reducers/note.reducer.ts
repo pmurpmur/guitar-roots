@@ -13,6 +13,7 @@ export interface State {
   root: n,
   naming: string,
   accidental: string,
+  color: boolean,
 };
 
 export const initialState: State = {
@@ -21,6 +22,7 @@ export const initialState: State = {
   root: null,
   naming: 'pitch',
   accidental: 'flat',
+  color: false,
 };
 
 
@@ -28,6 +30,7 @@ export const reducer = createReducer(initialState, {
   [actions.SELECT_ROOT]: (payload) => set(lens(prop('root'), assoc('root')))(parseNote(payload)),
   [actions.SELECT_NAMING]: assoc('naming'),
   [actions.SELECT_ACCIDENTAL]: assoc('accidental'),
+  [actions.TOGGLE_COLOR]: assoc('color'),
 });
 
 
@@ -41,3 +44,4 @@ export const isPitchClass = (state: State) => state.naming === 'pitch';
 export const isNumberSystem = (state: State) => state.naming === 'number';
 export const isFlat = (state: State) => state.accidental === 'flat';
 export const isSharp = (state: State) => state.accidental === 'sharp';
+export const hasColor = (state: State) => state.color;

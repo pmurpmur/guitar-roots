@@ -1,5 +1,5 @@
 import { Component, Prop, State } from '@stencil/core';
-import { InputChangeEvent } from '@ionic/core';
+import { InputChangeEvent, CheckedInputChangeEvent } from '@ionic/core';
 import { Store } from '@stencil/redux';
 
 import * as utils from '../../helpers/url-utilities';
@@ -27,6 +27,7 @@ export class GuitarPage {
   @State() isFlat: boolean;
   @State() isSharp: boolean;
   @State() scales: Scale[];
+  @State() hasColor: boolean;
 
   dispatch: Function;
 
@@ -40,6 +41,7 @@ export class GuitarPage {
       isFlat: fromMusic.isFlat(state),
       isSharp: fromMusic.isSharp(state),
       scales: fromMusic.getScales(state),
+      hasColor: fromMusic.hasColor(state),
     }));
 
     this.store.mapDispatchToProps(this, {
@@ -74,6 +76,10 @@ export class GuitarPage {
 
   handleSelectNaming = ({ detail }: CustomEvent<InputChangeEvent>) => {
     this.dispatch(note.SelectNamingAction(detail.value));
+  }
+
+  handleColorToggle = ({ detail }: CustomEvent<CheckedInputChangeEvent>) => {
+    this.dispatch(note.ToggleColorAction(detail.checked));
   }
 
   handleSelectAccidental = ({ detail }: CustomEvent<InputChangeEvent>) => {
@@ -193,6 +199,13 @@ export class GuitarPage {
             <div class="tile">
               <div class="tile is-parent">
                 <article class="tile is-child box notification background-color--primary">
+                  <ion-toggle
+                    float-right
+                    color="secondary"
+                    value="color"
+                    checked={this.hasColor}
+                    onIonChange={this.handleColorToggle}
+                  />
                   <p class="title">Naming</p>
                   <div class="content">
                     <ion-list class="scale-list">

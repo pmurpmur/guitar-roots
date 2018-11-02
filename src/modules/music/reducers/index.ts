@@ -42,6 +42,7 @@ export const isPitchClass = createSelector(getNoteState, fromNote.isPitchClass);
 export const isNumberSystem = createSelector(getNoteState, fromNote.isNumberSystem);
 export const isFlat = createSelector(getNoteState, fromNote.isFlat);
 export const isSharp = createSelector(getNoteState, fromNote.isSharp);
+export const hasColor = createSelector(getNoteState, fromNote.hasColor);
 
 const getScaleState = createSelector(getModuleState, (state: State) => state.scale);
 export const getScales = createSelector(getScaleState, fromScale.getItems);
@@ -112,7 +113,8 @@ export const getVisualOptions = createSelector(
   getSelectedNotes,
   getNumberSystemIntervals,
   isFlat,
-  (notes: Note[], rootNote: Note, selectedNotes: number[], numberIntervals: string[], isFlat: boolean): { [id: string]: NoteDetails } => {
+  hasColor,
+  (notes: Note[], rootNote: Note, selectedNotes: number[], numberIntervals: string[], isFlat: boolean, hasColor: boolean): { [id: string]: NoteDetails } => {
     return notes.reduce((prev: { [id: string]: NoteDetails }, curr: Note) => {
       const flat = note.stringifyNote(curr, true);
       const sharp = note.stringifyNote(curr, false);
@@ -127,7 +129,7 @@ export const getVisualOptions = createSelector(
           modifier: null,
           octave: null,
           number: rootNote !== null ? `${numberIntervals[selectedNotes.indexOf(curr)]}` : null,
-          color: note.colorizeNotes(selectedNotes.indexOf(curr)),
+          colorStyle: hasColor ? note.colorizeNotes(selectedNotes, curr) : null,
         },
       }
     }, {});

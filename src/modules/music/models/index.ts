@@ -11,5 +11,8 @@ export interface NoteDetails {
   modifier?: string,
   octave?: number,
   number: string,
-  color: string,
+  colorStyle: {
+    backgroundColor: string,
+    color: string
+  },
 };

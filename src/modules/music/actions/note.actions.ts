@@ -21,3 +21,11 @@ export const SelectAccidentalAction = createHashAction({
   type: SELECT_ACCIDENTAL,
   hashKey: 'accidental', 
 });
+
+export const TOGGLE_COLOR = `[${MODULE}][${TYPE}] Toggle Color`;
+export const ToggleColorAction = createHashAction({
+  type: TOGGLE_COLOR,
+  hashKey: 'color',
+  toHashValue: payload => payload ? 'true' : 'false',
+  fromHashValue: payload => payload === 'true',
+});

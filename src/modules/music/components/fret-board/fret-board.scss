@@ -3,7 +3,7 @@ $stringNum: 6;
 .fret-board-wrapper {
   display: flex;
   overflow-x: scroll;
-  padding: 3em 0 1em 0.5em;
+  padding: 3em 0 0 0.5em;
 
   &::-webkit-scrollbar {
     width: 0;

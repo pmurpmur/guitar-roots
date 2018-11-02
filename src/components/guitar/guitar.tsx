@@ -8,7 +8,7 @@ import { getHashAction } from '../../helpers/redux-utilities';
 import { stringifyNote, stringifyNoteUTF, parseNote } from '../../modules/music/services/note.service';
 
 import * as fromMusic from '../../modules/music/reducers';
-import { note, scale, tuning } from '../../modules/music/actions';
+import { instrument, note, scale, tuning } from '../../modules/music/actions';
 import { Scale, Note } from '../../modules/music/models';
 
 
@@ -28,6 +28,8 @@ export class GuitarPage {
   @State() isSharp: boolean;
   @State() scales: Scale[];
   @State() hasColor: boolean;
+  @State() isLocked: boolean;
+  @State() isUnlocked: boolean;
 
   dispatch: Function;
 
@@ -42,6 +44,8 @@ export class GuitarPage {
       isSharp: fromMusic.isSharp(state),
       scales: fromMusic.getScales(state),
       hasColor: fromMusic.hasColor(state),
+      isLocked: fromMusic.isLocked(state),
+      isUnlocked: fromMusic.isUnlocked(state),
     }));
 
     this.store.mapDispatchToProps(this, {
@@ -65,6 +69,16 @@ export class GuitarPage {
           this.dispatch(getHashAction(newParam));
         }
       });
+    }
+  }
+
+  handleLockToggle = () => {
+    if (this.isLocked) {
+      this.dispatch(instrument.UnlockInstrumentAction(!this.isUnlocked));
+      setTimeout(() => this.dispatch(instrument.LockInstrumentAction(!this.isLocked)), 0);
+    } else {
+      this.dispatch(instrument.LockInstrumentAction(!this.isLocked));
+      setTimeout(() => this.dispatch(instrument.UnlockInstrumentAction(!this.isUnlocked)), 0);
     }
   }
 
@@ -146,12 +160,22 @@ export class GuitarPage {
             <ion-menu-button></ion-menu-button>
           </ion-buttons>
           <ion-title>Guitar Roots {this.root ? ` - ${stringifyNoteUTF(this.root, this.isFlat)}` : ''}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button fill="clear" onClick={this.handleLockToggle}>
+              {this.isLocked ? <ion-icon slot="icon-only" name="lock" /> : <ion-icon slot="icon-only" name="unlock" />}
+            </ion-button>
+          </ion-buttons>
         </ion-toolbar>
+        {this.isLocked && (
+          <ion-toolbar color="white" class="fret-board-toolbar">
+            <fret-board />
+          </ion-toolbar>
+        )}
       </ion-header>,
 
       <ion-content>
         
-        <fret-board />
+        {this.isUnlocked && <fret-board />}
 
         <div padding-horizontal class="root-range tile is-ancestor">
           <div class="tile is-parent">

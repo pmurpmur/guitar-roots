@@ -9,3 +9,15 @@ export const SetAction = createHashAction({
   type: SET_FRETS,
   hashKey: 'frets', 
 });
+
+export const LOCK = `[${MODULE}][${TYPE}] Lock`;
+export const LockInstrumentAction = (payload: boolean) => ({
+  type: LOCK,
+  payload,
+});
+
+export const UNLOCK = `[${MODULE}][${TYPE}] Unlock`;
+export const UnlockInstrumentAction = (payload: boolean) => ({
+  type: UNLOCK,
+  payload,
+});

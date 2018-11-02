@@ -34,6 +34,8 @@ const getModuleState = (state: any) => state[MODULE];
 
 const getInstrumentState = createSelector(getModuleState, (state: State) => state.instrument);
 export const getFrets = createSelector(getInstrumentState, fromInstrument.getFrets);
+export const isLocked = createSelector(getInstrumentState, fromInstrument.isLocked);
+export const isUnlocked = createSelector(getInstrumentState, fromInstrument.isUnlocked);
 
 const getNoteState = createSelector(getModuleState, (state: State) => state.note);
 export const getNotes = createSelector(getNoteState, fromNote.getNotes);
